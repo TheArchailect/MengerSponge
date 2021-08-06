@@ -1,11 +1,27 @@
 #pragma once
 #include "include.h"
-#define GLT_IMPLEMENTATION
-#include <gltext/gltext.h>
 #include <stb/stb_image.h>
 #include "Window.h"
 #include "Input.h"
 #include "EngineUtilities.h"
+
+class Material {
+public:
+	Material(float a[], float d[], float s[], float shininess)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			Ka[i] = a[i];
+			Kd[i] = d[i];
+			Ks[i] = s[i];
+		}
+		n[0] = shininess;
+	}
+	GLfloat Ka[4];
+	GLfloat Kd[4];
+	GLfloat Ks[4];
+	GLfloat n[0];
+};
 
 class Application
 {
@@ -23,6 +39,7 @@ public:
 	static inline Application& Get() { return *s_Instance; }
 
 protected:
+	void SetMaterial(const Material& m);
 	typedef Application super;
 	bool m_FullScreen;
 	Input* m_Input;

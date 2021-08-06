@@ -1,7 +1,5 @@
 #pragma once
-#include <string>
-#include <map>
-#include <future>
+#include "../Core/include.h"
 struct CAMERA_ROTATION
 {
     float yaw = 0;
@@ -15,9 +13,9 @@ protected:
     T EventType;
     std::string EventName;
 public:
-    bool b_Handled = false;
     Event() = default;
     Event(T type, const std::string& name = "") : EventType(type), EventName(name) {};
+    Event(T type, int s, const std::string& name = "") : EventType(type), EventName(name), scene(s) { std::cout << "Scene change constructor" << std::endl; };
     Event(T type, int w, int h, const std::string& name = "") : EventType(type), EventName(name), windowWidth(w), windowHeight(h) {};
     Event(T type, CAMERA_ROTATION rotation, const std::string& name = "") : EventType(type), EventName(name), m_CameraRotation(rotation) {};
     Event(T type, bool b_Update, const std::string& name = "") : EventType(type), EventName(name), b_CameraUpdate(b_Update) {};
@@ -26,10 +24,12 @@ public:
     inline const std::string& GetName() const { return EventName; };
     virtual bool IsHandled() { return b_Handled; };
 public:
+    bool b_Handled = false;
     int windowWidth = 0;
     int windowHeight = 0;
     CAMERA_ROTATION m_CameraRotation;
     bool b_CameraUpdate = false;
+    int scene = 0;
 };
     
 template<typename T>

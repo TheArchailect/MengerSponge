@@ -1,15 +1,19 @@
 #include "Window.h"
 #include "Application.h"
-std::unique_ptr<Window> Window::Create(const WindowData& properties)
+std::unique_ptr<Window> Window::Create(const WindowData& properties, bool FullScreen)
 {
 	std::cout << "Window constructor" << std::endl;
-	return std::unique_ptr<Window>(new Window(properties));
+	return std::unique_ptr<Window>(new Window(properties, FullScreen));
 }
 
-Window::Window(const WindowData& properties)
+Window::Window(const WindowData& properties, bool FullScreen)
 {
 	Init(properties);
 	RegisterCallbacks();
+	if (FullScreen)
+	{
+		SDL_SetWindowFullscreen(m_Window, SDL_WINDOW_FULLSCREEN);		
+	}
 }
 
 void Window::RegisterCallbacks()
@@ -84,7 +88,7 @@ void Window::Init(const WindowData& properties)
 		m_Data.Width, m_Data.Height,
 		window_flags
 	);
-
+	m_Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);

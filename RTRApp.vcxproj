@@ -19,7 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Core\Scene.cpp" />
+    <ClCompile Include="src\Geometry\Mesh.cpp" />
+    <ClCompile Include="src\Core\Scenes\ModernScene.cpp" />
+    <ClCompile Include="src\Core\Scenes\Scene.cpp" />
+    <ClCompile Include="src\Core\Overlay.cpp" />
+    <ClCompile Include="src\Core\Scenes\FixedFunctionScene.cpp" />
     <ClCompile Include="src\Application\MengerSponge.cpp" />
     <ClCompile Include="Src\Core\Camera.cpp" />
     <ClCompile Include="Src\Core\Input.cpp" />
@@ -31,15 +35,21 @@
     <ClCompile Include="Src\Core\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Geometry\Mesh.h" />
+    <ClInclude Include="src\Core\Scenes\ModernScene.h" />
+    <ClInclude Include="src\Core\Scenes\Scene.h" />
+    <ClInclude Include="src\Core\Overlay.h" />
     <ClInclude Include="src\Core\EngineUtilities.h" />
     <ClInclude Include="src\Core\include.h" />
-    <ClInclude Include="src\Core\Scene.h" />
+    <ClInclude Include="src\Core\Scenes\FixedFunctionScene.h" />
     <ClInclude Include="src\Application\MengerSponge.h" />
     <ClInclude Include="Src\Core\Camera.h" />
     <ClInclude Include="Src\Core\Input.h" />
     <ClInclude Include="src\Event\Application\ApplicationEnd.h" />
     <ClInclude Include="Src\Event\Application\Generate.h" />
     <ClInclude Include="Src\Event\Application\ApplicationEvent.h" />
+    <ClInclude Include="src\Event\Application\ToggleProperties.h" />
+    <ClInclude Include="src\Event\Application\SwitchScene.h" />
     <ClInclude Include="Src\Event\Camera\CameraBackward.h" />
     <ClInclude Include="Src\Event\Camera\CameraDown.h" />
     <ClInclude Include="Src\Event\Camera\CameraEvent.h" />
@@ -58,6 +68,11 @@
     <ClInclude Include="Src\Geometry\Box.h" />
     <ClInclude Include="Src\Core\Application.h" />
     <ClInclude Include="Src\Core\Window.h" />
+    <ClInclude Include="src\Shaders\Shader.h" />
+    <ClInclude Include="src\Shaders\ShaderProgram.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Shaders\Default.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -4,13 +4,13 @@
 
 Camera::Camera(int width, int height)
 {
-	Pitch = 0;
-	Yaw = 0;
-	m_CameraSpeed = 3.5f;
+	Pitch = -25;
+	Yaw = -90;
+	m_CameraSpeed = 6.5f;
 	Aspect = (float)width / (float)height;
-	FOV = 45.0f;
-	m_Forward = glm::vec3(0.0f, 0.0f, -1.0f);
-	m_Position = glm::vec3(0.0f, 0.0f, 1.0f);
+	FOV = 65.0f;
+	m_Forward = glm::vec3(0.0f, 0.0f, -1.0f); // gets recalculated immidiately 
+	m_Position = glm::vec3(0.0f, 15.0f, 35.0f);
 	m_Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	View = glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
 	Projection = glm::perspective(glm::radians(FOV), Aspect, 0.1f, 1000.0f);
@@ -93,8 +93,6 @@ void Camera::Rotate(const Event<CameraEvent>& e)
 {
 	Yaw += (e.m_CameraRotation.yaw * Application::Get().GetUtils().m_DeltaTime * m_CameraSpeed);
 	Pitch += (e.m_CameraRotation.pitch * Application::Get().GetUtils().m_DeltaTime * m_CameraSpeed);
-	
-	//std::cout << "Pitch: " << Pitch << std::endl;
 
 	if (Pitch > 360.0f) 
 	{
@@ -104,31 +102,25 @@ void Camera::Rotate(const Event<CameraEvent>& e)
 	{
 		Pitch += 360.0f;
 	}
-
-	//m_Forward = glm::rotate(ToQuaternion(Yaw, Pitch, 0), m_Forward);
 }
 
 void Camera::Forward(const Event<CameraEvent>& e)
 {
-	std::cout << "Foward" << std::endl;
 	m_State.forward = e.b_CameraUpdate;
 }
 
 void Camera::Backward(const Event<CameraEvent>& e)
 {
-	std::cout << "Backward" << std::endl;
 	m_State.backward = e.b_CameraUpdate;
 }
 
 void Camera::Left(const Event<CameraEvent>& e)
 {
-	std::cout << "Left" << std::endl;
 	m_State.left = e.b_CameraUpdate;
 }
 
 void Camera::Right(const Event<CameraEvent>& e)
 {
-	std::cout << "Right" << std::endl;
 	m_State.right = e.b_CameraUpdate;
 }
 

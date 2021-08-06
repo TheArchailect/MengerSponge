@@ -1,7 +1,7 @@
 #pragma once
 #include "include.h"
 #include "../Event/EventManager.h"
-struct WindowData
+struct WindowData // TO DO
 {
 	std::string Title;
 	unsigned int Width;
@@ -12,8 +12,8 @@ struct WindowData
 class Window
 {
 public:
-	Window(const WindowData& properties);
-	static std::unique_ptr<Window> Create(const WindowData& properties = WindowData());
+	Window(const WindowData& properties, bool FullScreen);
+	static std::unique_ptr<Window> Create(const WindowData& properties, bool FullScreen);
 	void RegisterCallbacks();
 	void Update();
 	void WindowResize(const Event<WindowEvent>& e);
@@ -27,6 +27,6 @@ private:
 	void Init(const WindowData& properties);
 	SDL_Window* m_Window;
 	SDL_GLContext m_Context;
-
+	SDL_Renderer* m_Renderer;
 };
 

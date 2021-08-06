@@ -3,9 +3,18 @@
 MengerSponge::MengerSponge(unsigned int width, unsigned int height) : Application(width, height)
 {
     std::cout << "Application sub-class constructor" << std::endl;
-    RegisterCallbacks();
     Init();
-    m_Scene = new Scene(width, height);
+    RegisterCallbacks();
+    // material setup, needs to be moved out of here 
+    float ambient[4] = { 0.0f, 0.1f, 0.06f, 1.0f };
+    float diffuse[4] = { 0.0f,0.50980392f,0.50980392f,1.0f };
+    float specular[4] = { 0.50196078f,0.50196078f,0.50196078f,1.0f };
+    float shine = 32.0f;
+    // material end
+    CyanPlastic = new Material(ambient, diffuse, specular, shine);
+    SceneNumber = SCENE_NUMBER::S_ONE;
+    OverlayState = OVERLAY_STATE::S_FPS_ONLY;
+    m_Overlay = new Overlay();
 }
 
 void MengerSponge::Tick()
@@ -14,22 +23,21 @@ void MengerSponge::Tick()
     super::GetUtils().FrameRate();
     CameraUpdate e;
     m_EventManager->CameraDispatcher.Post(e);
-    
     super::Clear();
-    RenderOverlay();
+    m_Overlay->Render(OverlayState);
     RenderFrame();
     super::m_Input->Update();
-}
-
-void MengerSponge::RenderOverlay()
-{
-    char str[30];
-    gltBeginDraw();
-    gltColor(1, 0, 0, 0.7);
-    sprintf_s(str, "FPS: %.2f", Application::GetUtils().m_FPS);
-    gltSetText(fps, str);
-    gltDrawText2DAligned(fps, 0.0f, Application::GetWindow().m_Data.Height, 1.0f, GLT_LEFT, GLT_BOTTOM);
-    gltEndDraw();
+    // update overlay could be somewhere else
+    {
+        m_Overlay->m_OverlayData->Resolution = glm::vec2(1920, 1080); // TO DO
+        m_Overlay->m_OverlayData->GeometrySize = m_Scenes.at(SceneNumber)->GeometrySize();
+        m_Overlay->m_OverlayData->LOD = m_Scenes.at(SceneNumber)->Subdivision;
+        m_Overlay->m_OverlayData->BackFaceCulling = false; // TO DO
+        m_Overlay->m_OverlayData->DepthBuffering = true;
+        m_Overlay->m_OverlayData->LightCount = 1; // TO DO
+        m_Overlay->m_OverlayData->SceneNumber = SceneNumber; // TO DO
+        m_Overlay->m_OverlayData->RefreshRate = "60hz"; // TO DO
+    }
 }
 
 // application subclass subscription to app events
@@ -45,31 +53,63 @@ void MengerSponge::RegisterCallbacks()
             std::placeholders::_1
         )
     );
+
+    EventManager::Get().ApplicationDispatcher.Subscribe
+    (
+        ApplicationEvent::TOGGLE_PROPERTIES,
+        std::bind
+        (
+            &MengerSponge::ToggleOverlayDisplay,
+            this,
+            std::placeholders::_1
+        )
+    );
+
+    EventManager::Get().ApplicationDispatcher.Subscribe
+    (
+        ApplicationEvent::SWITCH_SCENE,
+        std::bind
+        (
+            &MengerSponge::ChangeScene,
+            this,
+            std::placeholders::_1
+        )
+    );
 }
 
 void MengerSponge::RenderFrame()
 {
-    m_Scene->Render();
+    super::SetMaterial(*CyanPlastic);
+    m_Scenes.at(SceneNumber)->Render();
+}
+
+void MengerSponge::ToggleOverlayDisplay(const Event<ApplicationEvent>& e)
+{
+    if (OverlayState == OVERLAY_STATE::S_FPS_ONLY) OverlayState = OVERLAY_STATE::S_FULL_HUD;
+    else OverlayState = OVERLAY_STATE::S_FPS_ONLY;
+}
+
+void MengerSponge::ChangeScene(const Event<ApplicationEvent>& e)
+{
+    //close glad & re initialise 
+    //SceneNumber = (SCENE_NUMBER)e.scene; this cannot be done until the scenes exist
+    std::cout << e.scene << std::endl;
 }
 
 bool MengerSponge::Init()
 {
-    // text
-    int glt = gltInit();
-    fps = gltCreateText();
-    // lighting etc
-    GLfloat light_ambient[] = { 1.0, 0.0, 0.0, 1.0 };
-    GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat light_position[] = { 1.0, 100.0, 1.0, 0.0 };
-    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_DEPTH_TEST);
-    return true; // do some checks here
+    m_Scenes.resize(6);
+    m_Scenes.at(SCENE_NUMBER::S_ONE) = new FixedFunctionScene
+    (
+        super::GetWindow().GetWidth(), 
+        super::GetWindow().GetHeight()
+    );
+    m_Scenes.at(SCENE_NUMBER::S_TWO) = new ModernScene
+    (
+        super::GetWindow().GetWidth(),
+        super::GetWindow().GetHeight()
+    );
+    return true; // do some checks here to asset all scenes are initialised
 }
 
 void MengerSponge::Run()
@@ -85,7 +125,5 @@ void MengerSponge::End(const Event<ApplicationEvent>& e)
 {
     std::cout << "Application subclass deconstructor" << std::endl;
     super::b_IsRunning = false;
-    gltDeleteText(fps);
-    gltTerminate();
     super::End(e);
 }

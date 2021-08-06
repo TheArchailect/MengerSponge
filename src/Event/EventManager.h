@@ -22,6 +22,8 @@
 #include "Application/ApplicationEvent.h"
 #include "Application/Generate.h"
 #include "Application/ApplicationEnd.h"
+#include "Application/ToggleProperties.h"
+#include "Application/SwitchScene.h"
 
 class EventManager {
 public:

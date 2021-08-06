@@ -80,6 +80,56 @@
 					CameraDown e(b_UpdateCamera);
 					EventManager::Get().CameraDispatcher.Post(e);
 				}
+				
+				// hud
+				if (event.key.keysym.sym == SDLK_h && event.key.state == SDL_PRESSED)
+				{
+					ToggleProperties e;
+					EventManager::Get().ApplicationDispatcher.Post(e);
+				}
+
+				// scene switch
+				if 
+					(
+						event.key.keysym.sym == SDLK_0 || 
+						event.key.keysym.sym == SDLK_1 ||
+						event.key.keysym.sym == SDLK_2 ||
+						event.key.keysym.sym == SDLK_3 ||
+						event.key.keysym.sym == SDLK_4 ||
+						event.key.keysym.sym == SDLK_5
+					)
+				{
+					if (event.key.state == SDL_PRESSED)
+					{
+						int scene = 0;
+						switch (event.key.keysym.sym)
+						{
+						case SDLK_0:
+							scene = 0;
+							break;
+						case SDLK_1:
+							scene = 1;
+							break;
+						case SDLK_2:
+							scene = 2;
+							break;
+						case SDLK_3:
+							scene = 3;
+							break;
+						case SDLK_4:
+							scene = 4;
+							break;
+						case SDLK_5:
+							scene = 5;
+							break;
+						}
+						SwitchScene e(scene);
+						EventManager::Get().ApplicationDispatcher.Post(e);
+					}
+
+				}
+				
+				// subdivision
 				if (event.key.keysym.sym == SDLK_PLUS || 
 					event.key.keysym.sym == SDLK_EQUALS || 
 					event.key.keysym.sym == SDLK_KP_PLUS)
