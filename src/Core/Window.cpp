@@ -23,7 +23,6 @@ void Window::RegisterCallbacks()
 		WindowEvent::WINDOW_RESIZE,
 		std::bind(&Window::WindowResize, this, std::placeholders::_1)
 	);
-
 	EventManager::Get().WindowDispatcher.Subscribe
 	(
 		WindowEvent::WINDOW_CLOSE,
@@ -92,9 +91,11 @@ void Window::Init(const WindowData& properties)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+
 	m_Context = SDL_GL_CreateContext(m_Window);
 	SDL_GL_MakeCurrent(m_Window, m_Context);
 	SDL_GL_SetSwapInterval(1); // Enable vsync
+
 	//ALT_CORE_INFO("Loading GLAD: {0}", gladLoadGL());
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
 		std::cout << "glad load error" << std::endl;

@@ -20,32 +20,33 @@ void Mesh::SetupMesh()
 {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    //glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, m_Verts.size() * sizeof(Vertex), m_Verts.data(), GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData
-    (
-        GL_ELEMENT_ARRAY_BUFFER,
-        m_Indices.size() * sizeof(unsigned int),
-        &m_Indices[0], GL_STATIC_DRAW
-    );
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    //glBufferData
+    //(
+    //    GL_ELEMENT_ARRAY_BUFFER,
+    //    m_Indices.size() * sizeof(unsigned int),
+    //    &m_Indices[0], GL_STATIC_DRAW
+    //);
 
     // vertex positions
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
     // vertex normals
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
 }
 
 void Mesh::Draw(GLenum ShaderPrimitive)
 {
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
+    //glDrawElements(GL_LINES, m_Indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawArrays(ShaderPrimitive, 0, m_Verts.size());
 }
 
 void Mesh::Update()

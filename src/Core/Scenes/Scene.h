@@ -12,14 +12,16 @@ public:
 	virtual void Render() = 0;
 
 public:
-	void Generate(const Event<ApplicationEvent>& e);
 	int GeometrySize();
 	int Subdivision;
 
 protected:
+	void Generate();
+	virtual void GeometryGenerate(const Event<ApplicationEvent>& e) = 0;
 	std::vector<Box*> MengerSponge;
 	Camera* m_Camera;
 	typedef Scene super;
+	bool b_IsActive;
 
 private:
 	virtual void RegisterCallbacks();

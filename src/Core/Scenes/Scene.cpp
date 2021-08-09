@@ -2,14 +2,16 @@
 
 Scene::Scene(int width, int height)
 {
+    b_IsActive = false;
     RegisterCallbacks();
 	m_Camera = new Camera(width, height);
-	Box* b = new Box(glm::vec3(0, 0, 0), 10);
-	Subdivision = 0;
+	Box* b = new Box(glm::vec3(0, 0, 0), 12);
+	Subdivision = 1;
 	MengerSponge = b->Generate();
 }
 
-void Scene::Generate(const Event<ApplicationEvent>& e)
+// sub divide
+void Scene::Generate()
 {
     std::vector<Box*> generated;
     for (Box* b : MengerSponge)
@@ -31,14 +33,4 @@ int Scene::GeometrySize()
 
 void Scene::RegisterCallbacks()
 {
-    EventManager::Get().ApplicationDispatcher.Subscribe
-    (
-        ApplicationEvent::GENERATE,
-        std::bind
-        (
-            &Scene::Generate,
-            this,
-            std::placeholders::_1
-        )
-    );
 }

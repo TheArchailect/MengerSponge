@@ -1,17 +1,14 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "../Core/include.h"
-class Vertex {
-public:
-	glm::vec3 Position;
-	glm::vec3 Normal;
-};
+#include "Box.h"
+
 class Mesh
 {
 public:
 	Mesh
 	(
-		std::vector<Vertex> v,
+		std::vector<Vertex> v, 
 		std::vector<unsigned int> i
 	);
 	virtual ~Mesh() {};
@@ -31,5 +28,6 @@ private:
 	unsigned int				VBO;
 	unsigned int				EBO;
 	void SetupMesh();
+
 };
 

@@ -29,7 +29,7 @@ void MengerSponge::Tick()
     super::m_Input->Update();
     // update overlay could be somewhere else
     {
-        m_Overlay->m_OverlayData->Resolution = glm::vec2(1920, 1080); // TO DO
+        m_Overlay->m_OverlayData->Resolution = glm::vec2(800, 600); // TO DO
         m_Overlay->m_OverlayData->GeometrySize = m_Scenes.at(SceneNumber)->GeometrySize();
         m_Overlay->m_OverlayData->LOD = m_Scenes.at(SceneNumber)->Subdivision;
         m_Overlay->m_OverlayData->BackFaceCulling = false; // TO DO
@@ -79,7 +79,7 @@ void MengerSponge::RegisterCallbacks()
 
 void MengerSponge::RenderFrame()
 {
-    super::SetMaterial(*CyanPlastic);
+    //super::SetMaterial(*CyanPlastic); // only in fixed function
     m_Scenes.at(SceneNumber)->Render();
 }
 
@@ -91,8 +91,10 @@ void MengerSponge::ToggleOverlayDisplay(const Event<ApplicationEvent>& e)
 
 void MengerSponge::ChangeScene(const Event<ApplicationEvent>& e)
 {
-    //close glad & re initialise 
-    //SceneNumber = (SCENE_NUMBER)e.scene; this cannot be done until the scenes exist
+    //close glad & re initialise
+    m_Scenes.at(SceneNumber)->End();
+    SceneNumber = (SCENE_NUMBER)e.scene; //this cannot be done until the scenes exist
+    m_Scenes.at(SceneNumber)->Begin();
     std::cout << e.scene << std::endl;
 }
 
@@ -104,6 +106,7 @@ bool MengerSponge::Init()
         super::GetWindow().GetWidth(), 
         super::GetWindow().GetHeight()
     );
+    m_Scenes.at(SCENE_NUMBER::S_ONE)->Begin();
     m_Scenes.at(SCENE_NUMBER::S_TWO) = new ModernScene
     (
         super::GetWindow().GetWidth(),

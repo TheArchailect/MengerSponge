@@ -6,18 +6,19 @@ Box::Box(glm::vec3 pos, float s)
 	float x = pos.x;
 	float y = pos.y;
 	float z = pos.z;
-	Size = s;
+	Size = s - 0.001;
 	Position = pos;
 
 	// vert pos
-	v.push_back(Vertex(glm::vec3(x + s, y - s, z - s)));
-	v.push_back(Vertex(glm::vec3(x + s, y + s, z - s)));
-	v.push_back(Vertex(glm::vec3(x + s, y + s, z + s)));
-	v.push_back(Vertex(glm::vec3(x + s, y - s, z + s)));
-	v.push_back(Vertex(glm::vec3(x - s, y - s, z - s)));
-	v.push_back(Vertex(glm::vec3(x - s, y - s, z + s)));
-	v.push_back(Vertex(glm::vec3(x - s, y + s, z + s)));
-	v.push_back(Vertex(glm::vec3(x - s, y + s, z - s)));
+	v.push_back(glm::vec3(x + s, y - s, z - s));
+	v.push_back(glm::vec3(x + s, y + s, z - s));
+	v.push_back(glm::vec3(x + s, y + s, z + s));
+	v.push_back(glm::vec3(x + s, y - s, z + s));
+	v.push_back(glm::vec3(x - s, y - s, z - s));
+	v.push_back(glm::vec3(x - s, y - s, z + s));
+	v.push_back(glm::vec3(x - s, y + s, z + s));
+	v.push_back(glm::vec3(x - s, y + s, z - s));
+	Convert();
 }
 
 void Box::Draw()
@@ -33,96 +34,184 @@ void Box::Draw()
 
 	glm::vec3 normal = CalcNormal
 	(
-		v.at(0).Position,
-		v.at(1).Position,
-		v.at(3).Position
+		v.at(0),
+		v.at(1),
+		v.at(3)
 	);
 	glColor4f(normal.x, normal.y, normal.z, 1);
-	glVertex3f(v.at(0).Position.x, v.at(0).Position.y, v.at(0).Position.z);
-	glVertex3f(v.at(1).Position.x, v.at(1).Position.y, v.at(1).Position.z);
-	glVertex3f(v.at(3).Position.x, v.at(3).Position.y, v.at(3).Position.z);
-	glVertex3f(v.at(1).Position.x, v.at(1).Position.y, v.at(1).Position.z);
-	glVertex3f(v.at(2).Position.x, v.at(2).Position.y, v.at(2).Position.z);
-	glVertex3f(v.at(3).Position.x, v.at(3).Position.y, v.at(3).Position.z);
+	glVertex3f(v.at(0).x, v.at(0).y, v.at(0).z);
+	glVertex3f(v.at(1).x, v.at(1).y, v.at(1).z);
+	glVertex3f(v.at(3).x, v.at(3).y, v.at(3).z);
+	glVertex3f(v.at(1).x, v.at(1).y, v.at(1).z);
+	glVertex3f(v.at(2).x, v.at(2).y, v.at(2).z);
+	glVertex3f(v.at(3).x, v.at(3).y, v.at(3).z);
 	glNormal3f(normal.x, normal.y, normal.z);
 
 	normal = CalcNormal
 	(
-		v.at(3).Position,
-		v.at(2).Position,
-		v.at(5).Position
+		v.at(3),
+		v.at(2),
+		v.at(5)
 	);
 	glColor4f(normal.x, normal.y, normal.z, 1);
-	glVertex3f(v.at(3).Position.x, v.at(3).Position.y, v.at(3).Position.z);
-	glVertex3f(v.at(2).Position.x, v.at(2).Position.y, v.at(2).Position.z);
-	glVertex3f(v.at(5).Position.x, v.at(5).Position.y, v.at(5).Position.z);
-	glVertex3f(v.at(2).Position.x, v.at(2).Position.y, v.at(2).Position.z);
-	glVertex3f(v.at(6).Position.x, v.at(6).Position.y, v.at(6).Position.z);
-	glVertex3f(v.at(5).Position.x, v.at(5).Position.y, v.at(5).Position.z);
+	glVertex3f(v.at(3).x, v.at(3).y, v.at(3).z);
+	glVertex3f(v.at(2).x, v.at(2).y, v.at(2).z);
+	glVertex3f(v.at(5).x, v.at(5).y, v.at(5).z);
+	glVertex3f(v.at(2).x, v.at(2).y, v.at(2).z);
+	glVertex3f(v.at(6).x, v.at(6).y, v.at(6).z);
+	glVertex3f(v.at(5).x, v.at(5).y, v.at(5).z);
 	glNormal3f(normal.x, normal.y, normal.z);
 
 	normal = CalcNormal
 	(
-		v.at(4).Position,
-		v.at(0).Position,
-		v.at(5).Position
+		v.at(4),
+		v.at(0),
+		v.at(5)
 	);
 	glColor4f(normal.x, normal.y, normal.z, 1);
-	glVertex3f(v.at(4).Position.x, v.at(4).Position.y, v.at(4).Position.z);
-	glVertex3f(v.at(0).Position.x, v.at(0).Position.y, v.at(0).Position.z);
-	glVertex3f(v.at(5).Position.x, v.at(5).Position.y, v.at(5).Position.z);
-	glVertex3f(v.at(5).Position.x, v.at(5).Position.y, v.at(5).Position.z);
-	glVertex3f(v.at(0).Position.x, v.at(0).Position.y, v.at(0).Position.z);
-	glVertex3f(v.at(3).Position.x, v.at(3).Position.y, v.at(3).Position.z);
+	glVertex3f(v.at(4).x, v.at(4).y, v.at(4).z);
+	glVertex3f(v.at(0).x, v.at(0).y, v.at(0).z);
+	glVertex3f(v.at(5).x, v.at(5).y, v.at(5).z);
+	glVertex3f(v.at(5).x, v.at(5).y, v.at(5).z);
+	glVertex3f(v.at(0).x, v.at(0).y, v.at(0).z);
+	glVertex3f(v.at(3).x, v.at(3).y, v.at(3).z);
 	glNormal3f(normal.x, normal.y, normal.z);
 
 	normal = CalcNormal
 	(
-		v.at(1).Position,
-		v.at(7).Position,
-		v.at(6).Position
+		v.at(1),
+		v.at(7),
+		v.at(6)
 	);
 	glColor4f(normal.x, normal.y, normal.z, 1);
-	glVertex3f(v.at(1).Position.x, v.at(1).Position.y, v.at(1).Position.z);
-	glVertex3f(v.at(7).Position.x, v.at(7).Position.y, v.at(7).Position.z);
-	glVertex3f(v.at(6).Position.x, v.at(6).Position.y, v.at(6).Position.z);
-	glVertex3f(v.at(1).Position.x, v.at(1).Position.y, v.at(1).Position.z);
-	glVertex3f(v.at(6).Position.x, v.at(6).Position.y, v.at(6).Position.z);
-	glVertex3f(v.at(2).Position.x, v.at(2).Position.y, v.at(2).Position.z);
+	glVertex3f(v.at(1).x, v.at(1).y, v.at(1).z);
+	glVertex3f(v.at(7).x, v.at(7).y, v.at(7).z);
+	glVertex3f(v.at(6).x, v.at(6).y, v.at(6).z);
+	glVertex3f(v.at(1).x, v.at(1).y, v.at(1).z);
+	glVertex3f(v.at(6).x, v.at(6).y, v.at(6).z);
+	glVertex3f(v.at(2).x, v.at(2).y, v.at(2).z);
 	glNormal3f(normal.x, normal.y, normal.z);
 
 	normal = CalcNormal
 	(
-		v.at(7).Position,
-		v.at(4).Position,
-		v.at(5).Position
+		v.at(7),
+		v.at(4),
+		v.at(5)
 	);
 	glColor4f(normal.x, normal.y, normal.z, 1);
-	glVertex3f(v.at(7).Position.x, v.at(7).Position.y, v.at(7).Position.z);
-	glVertex3f(v.at(4).Position.x, v.at(4).Position.y, v.at(4).Position.z);
-	glVertex3f(v.at(5).Position.x, v.at(5).Position.y, v.at(5).Position.z);
-	glVertex3f(v.at(7).Position.x, v.at(7).Position.y, v.at(7).Position.z);
-	glVertex3f(v.at(5).Position.x, v.at(5).Position.y, v.at(5).Position.z);
-	glVertex3f(v.at(6).Position.x, v.at(6).Position.y, v.at(6).Position.z);
+	glVertex3f(v.at(7).x, v.at(7).y, v.at(7).z);
+	glVertex3f(v.at(4).x, v.at(4).y, v.at(4).z);
+	glVertex3f(v.at(5).x, v.at(5).y, v.at(5).z);
+	glVertex3f(v.at(7).x, v.at(7).y, v.at(7).z);
+	glVertex3f(v.at(5).x, v.at(5).y, v.at(5).z);
+	glVertex3f(v.at(6).x, v.at(6).y, v.at(6).z);
 	glNormal3f(normal.x, normal.y, normal.z);
 
 	normal = CalcNormal
 	(
-		v.at(7).Position,
-		v.at(1).Position,
-		v.at(0).Position
+		v.at(7),
+		v.at(1),
+		v.at(0)
 	);
 	glColor4f(normal.x, normal.y, normal.z, 1);
-	glVertex3f(v.at(7).Position.x, v.at(7).Position.y, v.at(7).Position.z);
-	glVertex3f(v.at(1).Position.x, v.at(1).Position.y, v.at(1).Position.z);
-	glVertex3f(v.at(0).Position.x, v.at(0).Position.y, v.at(0).Position.z);
-	glVertex3f(v.at(7).Position.x, v.at(7).Position.y, v.at(7).Position.z);
-	glVertex3f(v.at(0).Position.x, v.at(0).Position.y, v.at(0).Position.z);
-	glVertex3f(v.at(4).Position.x, v.at(4).Position.y, v.at(4).Position.z);
+	glVertex3f(v.at(7).x, v.at(7).y, v.at(7).z);
+	glVertex3f(v.at(1).x, v.at(1).y, v.at(1).z);
+	glVertex3f(v.at(0).x, v.at(0).y, v.at(0).z);
+	glVertex3f(v.at(7).x, v.at(7).y, v.at(7).z);
+	glVertex3f(v.at(0).x, v.at(0).y, v.at(0).z);
+	glVertex3f(v.at(4).x, v.at(4).y, v.at(4).z);
 	glNormal3f(normal.x, normal.y, normal.z);
 
 	glEnd();
 	glPopMatrix();
+}
+
+void Box::Convert()
+{
+	Vertices.push_back(v.at(0) + Position);
+	Vertices.push_back(v.at(1) + Position);
+	Vertices.push_back(v.at(3) + Position);
+	Vertices.push_back(v.at(1) + Position);
+	Vertices.push_back(v.at(2) + Position);
+	Vertices.push_back(v.at(3) + Position);
+
+	Vertices.push_back(v.at(3) + Position);
+	Vertices.push_back(v.at(2) + Position);
+	Vertices.push_back(v.at(5) + Position);
+	Vertices.push_back(v.at(2) + Position);
+	Vertices.push_back(v.at(6) + Position);
+	Vertices.push_back(v.at(5) + Position);
+
+	Vertices.push_back(v.at(4) + Position);
+	Vertices.push_back(v.at(0) + Position);
+	Vertices.push_back(v.at(5) + Position);
+	Vertices.push_back(v.at(5) + Position);
+	Vertices.push_back(v.at(0) + Position);
+	Vertices.push_back(v.at(3) + Position);
+
+	Vertices.push_back(v.at(1) + Position);
+	Vertices.push_back(v.at(7) + Position);
+	Vertices.push_back(v.at(6) + Position);
+	Vertices.push_back(v.at(1) + Position);
+	Vertices.push_back(v.at(6) + Position);
+	Vertices.push_back(v.at(2) + Position);
+
+	Vertices.push_back(v.at(7) + Position);
+	Vertices.push_back(v.at(4) + Position);
+	Vertices.push_back(v.at(5) + Position);
+	Vertices.push_back(v.at(7) + Position);
+	Vertices.push_back(v.at(5) + Position);
+	Vertices.push_back(v.at(6) + Position);
+
+	Vertices.push_back(v.at(7) + Position);
+	Vertices.push_back(v.at(1) + Position);
+	Vertices.push_back(v.at(0) + Position);
+	Vertices.push_back(v.at(7) + Position);
+	Vertices.push_back(v.at(0) + Position);
+	Vertices.push_back(v.at(4) + Position);
+
+	for (int i = 0; i < 6; ++i)
+	Normals.push_back(CalcNormal
+	(
+		v.at(0),
+		v.at(1),
+		v.at(3)
+	));
+	for (int i = 0; i < 6; ++i)
+	Normals.push_back(CalcNormal
+	(
+		v.at(3),
+		v.at(2),
+		v.at(5)
+	));
+	for (int i = 0; i < 6; ++i)
+	Normals.push_back(CalcNormal
+	(
+		v.at(4),
+		v.at(0),
+		v.at(5)
+	));
+	for (int i = 0; i < 6; ++i)
+	Normals.push_back(CalcNormal
+	(
+		v.at(1),
+		v.at(7),
+		v.at(6)
+	));
+	for (int i = 0; i < 6; ++i)
+	Normals.push_back(CalcNormal
+	(
+		v.at(7),
+		v.at(4),
+		v.at(5)
+	));
+	for (int i = 0; i < 6; ++i)
+	Normals.push_back(CalcNormal
+	(
+		v.at(7),
+		v.at(1),
+		v.at(0)
+	));
 }
 
 std::vector<Box*> Box::Generate() // 27 boxes sub-d

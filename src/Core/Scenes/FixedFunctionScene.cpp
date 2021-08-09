@@ -10,15 +10,17 @@ GLfloat light_position[] = { 1.0, 200.0, -100.0, 0.0 };
 FixedFunctionScene::FixedFunctionScene(int width, int height) : Scene(width, height)
 {
     std::cout << "Fixed Function Constructor" << std::endl;
-    //RegisterCallbacks();
+    RegisterCallbacks();
 }
 
 void FixedFunctionScene::Begin()
 {
+    super::b_IsActive = true;
 }
 
 void FixedFunctionScene::End()
 {
+    super::b_IsActive = false;
 }
 
 void FixedFunctionScene::Render()
@@ -43,8 +45,24 @@ void FixedFunctionScene::Render()
     glPopMatrix();
 }
 
+void FixedFunctionScene::GeometryGenerate(const Event<ApplicationEvent>& e)
+{
+    if (super::b_IsActive)
+    super::Generate();
+}
+
 void FixedFunctionScene::RegisterCallbacks()
 {
+    EventManager::Get().ApplicationDispatcher.Subscribe
+    (
+        ApplicationEvent::GENERATE,
+        std::bind
+        (
+            &FixedFunctionScene::GeometryGenerate,
+            this,
+            std::placeholders::_1
+        )
+    );
 }
 
 void FixedFunctionScene::Update()

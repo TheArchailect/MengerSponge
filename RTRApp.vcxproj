@@ -72,6 +72,7 @@
     <ClInclude Include="src\Shaders\ShaderProgram.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\Shaders\Default.frag" />
     <None Include="src\Shaders\Default.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

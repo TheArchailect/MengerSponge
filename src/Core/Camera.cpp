@@ -6,7 +6,7 @@ Camera::Camera(int width, int height)
 {
 	Pitch = -25;
 	Yaw = -90;
-	m_CameraSpeed = 6.5f;
+	m_CameraSpeed = 8.5f;
 	Aspect = (float)width / (float)height;
 	FOV = 65.0f;
 	m_Forward = glm::vec3(0.0f, 0.0f, -1.0f); // gets recalculated immidiately 
@@ -34,21 +34,21 @@ void Camera::RegisterCallbacks()
 
 void Camera::Update(const Event<CameraEvent>& e)
 {
-	
 	float DeltaTime = Application::Get().GetUtils().m_DeltaTime;
 
 	m_Forward.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
 	m_Forward.y = sin(glm::radians(Pitch));
 	m_Forward.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
 	m_Forward = glm::normalize(m_Forward);
+
 	//glm::vec3 m_Right = glm::normalize(glm::cross(m_Forward, glm::vec3(0, 1, 0)));
 	//m_Up = glm::normalize(glm::cross(m_Right, m_Forward));
 
 	// update the translation
 	if (m_State.forward) m_Position += m_CameraSpeed * m_Forward * DeltaTime;
 	if (m_State.backward) m_Position -= m_CameraSpeed * m_Forward * DeltaTime;
-	if (m_State.left) m_Position -= m_CameraSpeed * glm::cross(m_Forward, m_Up) * DeltaTime;
-	if (m_State.right) m_Position += m_CameraSpeed * glm::cross(m_Forward, m_Up) * DeltaTime;
+	if (m_State.left) m_Position -= m_CameraSpeed * glm::normalize(glm::cross(m_Forward, m_Up)) * DeltaTime;
+	if (m_State.right) m_Position += m_CameraSpeed * glm::normalize(glm::cross(m_Forward, m_Up)) * DeltaTime;
 	if (m_State.up) m_Position += m_CameraSpeed * m_Up * DeltaTime;
 	if (m_State.down) m_Position -= m_CameraSpeed * m_Up * DeltaTime;
 }
@@ -91,16 +91,29 @@ glm::quat Camera::ToQuaternion(float yaw, float pitch, float roll)
 
 void Camera::Rotate(const Event<CameraEvent>& e)
 {
+	
 	Yaw += (e.m_CameraRotation.yaw * Application::Get().GetUtils().m_DeltaTime * m_CameraSpeed);
-	Pitch += (e.m_CameraRotation.pitch * Application::Get().GetUtils().m_DeltaTime * m_CameraSpeed);
 
-	if (Pitch > 360.0f) 
+	if (Yaw > 360.0f)
 	{
-		Pitch -= 360.0f;
+		Yaw = 0;
 	}
-	else if (Pitch < -360.0f) 
+	else if (Yaw < -360)
 	{
-		Pitch += 360.0f;
+		Yaw += 360.0f;
+	}
+
+	if (Pitch > 87.0f)
+	{
+		Pitch = 87.0f;
+	}
+	else if (Pitch < -87.0f)
+	{
+		Pitch = -87.0f;
+	}
+	else
+	{
+		Pitch += (e.m_CameraRotation.pitch * Application::Get().GetUtils().m_DeltaTime * m_CameraSpeed);
 	}
 }
 
