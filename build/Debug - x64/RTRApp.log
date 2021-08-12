@@ -1,0 +1,10 @@
+﻿  MengerSponge.cpp
+C:\Dev\MengerSponge\src\Core\Application.h(23,10): warning C4200: nonstandard extension used: zero-sized array in struct/union
+C:\Dev\MengerSponge\src\Core\Application.h(23,10): message : This member will be ignored by a defaulted constructor or copy/move assignment operator
+C:\Dev\MengerSponge\src\Shaders\Shader.h(48,38): warning C4244: 'argument': conversion from 'Uint32' to 'GLfloat', possible loss of data
+C:\Dev\MengerSponge\include\gltext\gltext.h(300,29): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  Scene.cpp
+C:\Dev\MengerSponge\src\Core\Scenes\Scene.cpp(174,47): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+  Generating Code...
+  RTRApp.vcxproj -> C:\Dev\MengerSponge\build\Debug - x64\A1.exe
+  0 File(s) copied

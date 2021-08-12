@@ -25,6 +25,7 @@ static int CreateShader(unsigned int vs, unsigned int fs, unsigned int geo) {
 	glDeleteShader(fs);
 	return program;
 }
+
 // Update Uniforms
 static void UpdateShader
 (
@@ -45,6 +46,15 @@ static void UpdateShader
 	// misc uniforms
 	int SystemTime = glGetUniformLocation(shader, "SystemTime");
 	glUniform1f(SystemTime, SDL_GetTicks());
+	// camera
+	int CameraLocation = glGetUniformLocation(shader, "Camera");
+	glUniform3f
+	(
+		CameraLocation, 
+		camera.m_Position.x, 
+		camera.m_Position.y, 
+		camera.m_Position.z
+	);
 }
 
 class Shader

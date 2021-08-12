@@ -168,5 +168,6 @@
   <ItemGroup>
     <None Include="src\Shaders\Default.vert" />
     <None Include="src\Shaders\Default.frag" />
+    <None Include="src\Shaders\Default.geom" />
   </ItemGroup>
 </Project>

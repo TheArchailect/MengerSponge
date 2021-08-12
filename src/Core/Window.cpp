@@ -2,7 +2,6 @@
 #include "Application.h"
 std::unique_ptr<Window> Window::Create(const WindowData& properties, bool FullScreen)
 {
-	std::cout << "Window constructor" << std::endl;
 	return std::unique_ptr<Window>(new Window(properties, FullScreen));
 }
 

@@ -9,7 +9,6 @@ GLfloat light_position[] = { 1.0, 200.0, -100.0, 0.0 };
 
 FixedFunctionScene::FixedFunctionScene(int width, int height) : Scene(width, height)
 {
-    std::cout << "Fixed Function Constructor" << std::endl;
     RegisterCallbacks();
 }
 
@@ -29,10 +28,11 @@ void FixedFunctionScene::Render()
     glPushMatrix(); 
     glm::mat4 v = m_Camera->GetView();
     glMultMatrixf((GLfloat*)&v);
-    for (Box* b : MengerSponge)
-    {
-        b->Draw();
-    }
+    //for (Box* b : MengerSponge)
+    //{
+    //    b->Draw();
+    //}
+    m_VAO->DrawLegacy();
     Application::Get().GetWindow().Update();
     // lighting start
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
@@ -48,7 +48,25 @@ void FixedFunctionScene::Render()
 void FixedFunctionScene::GeometryGenerate(const Event<ApplicationEvent>& e)
 {
     if (super::b_IsActive)
-    super::Generate();
+    {
+        //std::vector<Box*> generated;
+        //for (Box* b : MengerSponge)
+        //{
+        //    std::vector<Box*> temp = b->Generate();
+        //    for (Box* tb : temp)
+        //    {
+        //        generated.push_back(tb);
+        //    }
+        //}
+        //MengerSponge = generated;
+        //super::CurrentSubdivision++;
+        super::CurrentSubdivision++;
+        super::IndexOffset = 0; // TO DO
+        m_Sponge.clear();
+        m_Indices.clear();
+        super::Subdivide(glm::vec3(0, 0, 0), 15, CurrentSubdivision);
+        m_VAO = new Mesh(m_Sponge, m_Indices);
+    }
 }
 
 void FixedFunctionScene::RegisterCallbacks()

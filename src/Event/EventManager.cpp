@@ -3,6 +3,5 @@
 EventManager* EventManager::s_Instance = nullptr;
 EventManager::EventManager() 
 {
-	std::cout << "EventManager constructor" << std::endl;
 	s_Instance = this;
 }

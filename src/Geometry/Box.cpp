@@ -224,7 +224,8 @@ std::vector<Box*> Box::Generate() // 27 boxes sub-d
 			for (int z = -1; z < 2; ++z)
 			{
 				int check = abs(x) + abs(y) + abs(z);
-				if (check > 1) {
+				if (check > 1) 
+				{
 					float s = (Size / 3);
 					float newx = Position.x + x * s;
 					float newy = Position.y + y * s;

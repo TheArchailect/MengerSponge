@@ -55,7 +55,6 @@ void Camera::Update(const Event<CameraEvent>& e)
 
 void Camera::ViewPortResize(const Event<CameraEvent>& e)
 {
-	std::cout << "camera event" << std::endl;
 	//ALT_CORE_INFO("Camera viewport resize event: {0}, {1}, {2}", e.GetName(), e.windowWidth, e.windowHeight);
 	Aspect = (float)e.windowWidth / (float)e.windowHeight;
 	Projection = glm::perspective(glm::radians(FOV), Aspect, 0.1f, 1000.0f);

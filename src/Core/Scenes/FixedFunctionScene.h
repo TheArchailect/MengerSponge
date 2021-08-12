@@ -7,14 +7,13 @@ public:
 	void Begin() override;
 	void End() override;
 	void Render() override;
+
+private:
+	void RegisterCallbacks() override;
+	void Update() override;
 	
 protected:
 	void GeometryGenerate(const Event<ApplicationEvent>& e) override;
-
-private:
-	
-	void RegisterCallbacks();
-	void Update();
 
 };
 

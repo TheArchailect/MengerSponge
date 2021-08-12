@@ -6,7 +6,6 @@ Application* Application::s_Instance = nullptr;
 
 Application::Application(unsigned int width, unsigned int height)
 {
-    std::cout << "Application base constructor" << std::endl;
     s_Instance = this;
     m_FullScreen = false; // TO DO
     b_IsRunning = true;
@@ -29,7 +28,7 @@ void Application::End(const Event<ApplicationEvent>& e)
 
 void Application::Clear()
 {
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(1, 1, 1, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //glEnable(GL_LIGHTING); // ?
     glEnable(GL_DEPTH_TEST);
@@ -43,6 +42,7 @@ void Application::Clear()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
+// move this in fixed function
 void Application::SetMaterial(const Material& m)
 {
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m.Ka);
