@@ -1,7 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "../Core/include.h"
-#include "Box.h"
+#include "Vertex.h"
 
 class Mesh
 {
@@ -29,6 +29,7 @@ private:
 	unsigned int				VBO;
 	unsigned int				EBO;
 	void SetupMesh();
+	glm::vec3 CalcNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 
 };
 

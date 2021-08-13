@@ -1,37 +1,37 @@
 #include "FixedFunctionScene.h"
 #include "../Application.h"
 
-// lighting
-GLfloat light_ambient[] = { 0.1, 0.1, 0.1, 1.0 };
-GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-GLfloat light_specular[] = { 0.0, 0.0, 0.0, 1.0 };
-GLfloat light_position[] = { 1.0, 200.0, -100.0, 0.0 };
-
 FixedFunctionScene::FixedFunctionScene(int width, int height) : Scene(width, height)
 {
     RegisterCallbacks();
 }
 
 void FixedFunctionScene::Begin()
-{
+{   
     super::b_IsActive = true;
+    super::Subdivide(glm::vec3(0, 0, 0), 10, CurrentSubdivision);
+    m_VAO = new Mesh(m_Sponge, m_Indices);
+    glEnable(GL_LIGHTING);
 }
 
 void FixedFunctionScene::End()
 {
     super::b_IsActive = false;
+    glDisable(GL_LIGHTING);
+    glLoadIdentity();
+    //m_Sponge.clear();
+    //m_Indices.clear();
+    delete m_VAO;
+
 }
 
 void FixedFunctionScene::Render()
 {
+    SetMaterial(*CyanPlastic);
     Update();
     glPushMatrix(); 
     glm::mat4 v = m_Camera->GetView();
     glMultMatrixf((GLfloat*)&v);
-    //for (Box* b : MengerSponge)
-    //{
-    //    b->Draw();
-    //}
     m_VAO->DrawLegacy();
     Application::Get().GetWindow().Update();
     // lighting start
@@ -47,21 +47,12 @@ void FixedFunctionScene::Render()
 
 void FixedFunctionScene::GeometryGenerate(const Event<ApplicationEvent>& e)
 {
+    std::cout << "Geo Generate: IM" << std::endl;
     if (super::b_IsActive)
     {
-        //std::vector<Box*> generated;
-        //for (Box* b : MengerSponge)
-        //{
-        //    std::vector<Box*> temp = b->Generate();
-        //    for (Box* tb : temp)
-        //    {
-        //        generated.push_back(tb);
-        //    }
-        //}
-        //MengerSponge = generated;
-        //super::CurrentSubdivision++;
-        super::CurrentSubdivision++;
-        super::IndexOffset = 0; // TO DO
+        std::cout << "inner block" << std::endl;
+        super::CurrentSubdivision += e.division;
+        super::IndexOffset = 0; // TO DO unused in IM
         m_Sponge.clear();
         m_Indices.clear();
         super::Subdivide(glm::vec3(0, 0, 0), 15, CurrentSubdivision);
@@ -90,4 +81,12 @@ void FixedFunctionScene::Update()
     glm::mat4 p = m_Camera->GetProjection();
     glMultMatrixf((GLfloat*)&p);
     glMatrixMode(GL_MODELVIEW);
+}
+
+void FixedFunctionScene::SetMaterial(const Material& m)
+{
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m.Ka);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m.Kd);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m.Ks);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, m.n);
 }

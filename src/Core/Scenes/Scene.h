@@ -1,8 +1,27 @@
 #pragma once
-#include "../../Geometry/Box.h"
+#include "../../Geometry/Vertex.h"
 #include "../include.h"
 #include "../Camera.h"
 #include "../../Geometry/Mesh.h"
+
+class Material {
+public:
+	Material(float a[], float d[], float s[], float shininess)
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			Ka[i] = a[i];
+			Kd[i] = d[i];
+			Ks[i] = s[i];
+		}
+		n[0] = shininess;
+	}
+	GLfloat Ka[4];
+	GLfloat Kd[4];
+	GLfloat Ks[4];
+	GLfloat n[0];
+};
+
 class Scene
 {
 public: 
@@ -18,25 +37,34 @@ private:
 
 protected:
 	virtual void GeometryGenerate(const Event<ApplicationEvent>& e) = 0;
+	virtual void SetMaterial(const Material& m) = 0;
 
 public:
-	int GeometrySize();				// number of triangles in generated geo
-	int CurrentSubdivision;			// level of detail
+	int GeometrySize();
+	int TriangleCount();
+	unsigned int CurrentSubdivision;			
 
 protected:
-	void Subdivide(glm::vec3 Position, float s, int subd);				// parent geo generation TO DO
+	void Subdivide(glm::vec3 Position, float s, int subd);
 	void Compile(glm::vec3 origin, float size);
-	glm::vec3 CalcNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
 
 protected:
 	Mesh* m_VAO;
-	int IndexOffset;				// used for geo generation / indexing	
-	//std::vector<Box*> MengerSponge; // to be removed
+	int IndexOffset;				
 	std::vector<Vertex> m_Sponge;
 	std::vector<unsigned int> m_Indices;
 	Camera* m_Camera;				
 	typedef Scene super;
 	bool b_IsActive;
+	Material* CyanPlastic;
+	// lighting TO DO make class / struct
+	GLfloat light_ambient[4] = { 0.1, 0.1, 0.1, 1.0 };
+	GLfloat light_diffuse[4] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat light_specular[4] = { 0.0, 0.0, 0.0, 1.0 };
+	GLfloat light_position[4] = { 1.0, 200.0, -100.0, 0.0 };
+
+private:
+	
 	
 };
 

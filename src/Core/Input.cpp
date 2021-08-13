@@ -43,12 +43,13 @@
 				bool b_UpdateCamera = event.type == SDL_KEYDOWN;
 				if (event.key.keysym.sym == 27)
 				{
-					// first destroy all application instances
-					ApplicationEnd a;
-					EventManager::Get().ApplicationDispatcher.Post(a);
-					// second shutdown glad / opengl / SDL2
-					WindowClosedEvent w;
-					EventManager::Get().WindowDispatcher.Post(w);
+					if (event.type == SDL_KEYDOWN)
+					{
+						WindowClosedEvent w;
+						EventManager::Get().WindowDispatcher.Post(w);
+						ApplicationEnd a;
+						EventManager::Get().ApplicationDispatcher.Post(a);
+					}
 				}
 				if (event.key.keysym.sym == SDLK_a)
 				{
@@ -123,7 +124,7 @@
 							scene = 5;
 							break;
 						}
-						SwitchScene e(scene);
+						SwitchScene e((SCENE_NUMBER)scene);
 						EventManager::Get().ApplicationDispatcher.Post(e);
 					}
 
@@ -136,7 +137,15 @@
 				{
 					if (event.type == SDL_KEYDOWN)
 					{
-						Generate e;
+						Generate e(1);
+						EventManager::Get().ApplicationDispatcher.Post(e);
+					}
+				}
+				if (event.key.keysym.sym == SDLK_KP_MINUS)
+				{
+					if (event.type == SDL_KEYDOWN)
+					{
+						Generate e(-1);
 						EventManager::Get().ApplicationDispatcher.Post(e);
 					}
 				}

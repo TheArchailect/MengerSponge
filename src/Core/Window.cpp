@@ -118,7 +118,6 @@ void Window::Init(const WindowData& properties)
 
 void Window::ShutDown(const Event<WindowEvent>& e)
 {
-	std::cout << "closing SDL2 window: " << std::endl;
 	//ALT_CORE_WARNING("closing SDL2 window: {0}", m_Data.Title);
 	SDL_DestroyWindow(m_Window);
 	SDL_GL_DeleteContext(m_Context);

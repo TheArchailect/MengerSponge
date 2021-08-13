@@ -2,7 +2,7 @@
 #include "../EventManager.h"
 class SwitchScene : public Event<ApplicationEvent> {
 public:
-    SwitchScene(int scene)
+    SwitchScene(SCENE_NUMBER scene)
         : Event<ApplicationEvent>(ApplicationEvent::SWITCH_SCENE, scene, "change scene") {}
     virtual ~SwitchScene() = default;
 public:

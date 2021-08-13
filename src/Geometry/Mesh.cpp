@@ -11,8 +11,8 @@ Mesh::Mesh(std::vector<Vertex> v, std::vector<unsigned int> i)
     m_Transform = glm::rotate
     (
         m_Transform,
-        glm::radians(25.0f),
-        glm::vec3(0.0f, 0.0f, 0.0f)
+        glm::radians(45.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f)
     );
 }
 
@@ -46,7 +46,6 @@ void Mesh::Draw(GLenum ShaderPrimitive)
 {
     glBindVertexArray(VAO);
     glDrawElements(ShaderPrimitive, m_Indices.size(), GL_UNSIGNED_INT, 0);
-    //glDrawArrays(ShaderPrimitive, 0, m_Verts.size());
 }
 
 void Mesh::DrawLegacy()
@@ -56,16 +55,66 @@ void Mesh::DrawLegacy()
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
     glPushMatrix();
-    //glTranslatef(Position.x, Position.y, Position.z);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glBegin(GL_TRIANGLES);
-    for (int i = 0; i < m_Indices.size(); ++i)
+
+    for (int i = 5; i < m_Indices.size(); i += 6)
     {
+        glm::vec3 n = CalcNormal
+        (
+            m_Verts.at(m_Indices.at(i - 2)).Position,
+            m_Verts.at(m_Indices.at(i - 1)).Position,
+            m_Verts.at(m_Indices.at(i )).Position
+        );
+
+        // Tri 1
+        glVertex3f
+        (
+            m_Verts.at(m_Indices.at(i - 2)).Position.x,
+            m_Verts.at(m_Indices.at(i - 2)).Position.y,
+            m_Verts.at(m_Indices.at(i - 2)).Position.z
+        );
+
+        glVertex3f
+        (
+            m_Verts.at(m_Indices.at(i - 1)).Position.x,
+            m_Verts.at(m_Indices.at(i - 1)).Position.y,
+            m_Verts.at(m_Indices.at(i - 1)).Position.z
+        );
+
         glVertex3f
         (
             m_Verts.at(m_Indices.at(i)).Position.x,
             m_Verts.at(m_Indices.at(i)).Position.y,
             m_Verts.at(m_Indices.at(i)).Position.z
+        );
+        // tri 2
+        glVertex3f
+        (
+            m_Verts.at(m_Indices.at(i - 5)).Position.x,
+            m_Verts.at(m_Indices.at(i - 5)).Position.y,
+            m_Verts.at(m_Indices.at(i - 5)).Position.z
+        );
+
+        glVertex3f
+        (
+            m_Verts.at(m_Indices.at(i - 4)).Position.x,
+            m_Verts.at(m_Indices.at(i - 4)).Position.y,
+            m_Verts.at(m_Indices.at(i - 4)).Position.z
+        );
+
+        glVertex3f
+        (
+            m_Verts.at(m_Indices.at(i - 3)).Position.x,
+            m_Verts.at(m_Indices.at(i - 3)).Position.y,
+            m_Verts.at(m_Indices.at(i - 3)).Position.z
+        );
+        // face normal
+        glNormal3f
+        (
+            n.x, 
+            n.y, 
+            n.z
         );
     }
     glEnd();
@@ -84,4 +133,11 @@ void Mesh::Update()
 glm::mat4 Mesh::GetTransform()
 {
 	return m_Transform;
+}
+
+glm::vec3 Mesh::CalcNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3)
+{
+    glm::vec3 A = p2 - p1;
+    glm::vec3 B = p3 - p1;
+    return glm::normalize(glm::cross(A, B));
 }

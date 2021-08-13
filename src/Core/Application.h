@@ -5,33 +5,20 @@
 #include "Input.h"
 #include "EngineUtilities.h"
 
-class Material {
-public:
-	Material(float a[], float d[], float s[], float shininess)
-	{
-		for (int i = 0; i < 4; ++i)
-		{
-			Ka[i] = a[i];
-			Kd[i] = d[i];
-			Ks[i] = s[i];
-		}
-		n[0] = shininess;
-	}
-	GLfloat Ka[4];
-	GLfloat Kd[4];
-	GLfloat Ks[4];
-	GLfloat n[0];
-};
-
 class Application
 {
 public:
-	Application(unsigned int width, unsigned int height);
-	virtual bool Init() = 0;
+	Application(uint32_t width, uint32_t height);
 	virtual void Run() = 0;
-	virtual void End(const Event<ApplicationEvent>& e) = 0;
+	virtual bool Init() = 0;
+	
+
+private:
 	virtual void Tick() = 0;
+
+protected:
 	void Clear();
+	virtual void End(const Event<ApplicationEvent>& e) = 0;
 
 public:
 	inline EngineUtils& GetUtils() { return *m_Utils; }
@@ -39,7 +26,6 @@ public:
 	static inline Application& Get() { return *s_Instance; }
 
 protected:
-	void SetMaterial(const Material& m);
 	typedef Application super;
 	bool m_FullScreen;
 	Input* m_Input;

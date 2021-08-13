@@ -28,11 +28,11 @@
     <ClCompile Include="Src\Core\Camera.cpp" />
     <ClCompile Include="Src\Core\Input.cpp" />
     <ClCompile Include="Src\Event\EventManager.cpp" />
-    <ClCompile Include="Src\Geometry\Box.cpp" />
     <ClCompile Include="Include\glad\glad.c" />
     <ClCompile Include="Src\Core\Application.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\Core\Window.cpp" />
+    <ClCompile Include="src\Geometry\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Geometry\Mesh.h" />
@@ -65,11 +65,11 @@
     <ClInclude Include="Src\Event\Window\WindowClosedEvent.h" />
     <ClInclude Include="Src\Event\Window\WindowEvent.h" />
     <ClInclude Include="Src\Event\Window\WindResizeEvent.h" />
-    <ClInclude Include="Src\Geometry\Box.h" />
     <ClInclude Include="Src\Core\Application.h" />
     <ClInclude Include="Src\Core\Window.h" />
     <ClInclude Include="src\Shaders\Shader.h" />
     <ClInclude Include="src\Shaders\ShaderProgram.h" />
+    <ClInclude Include="src\Geometry\Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\Default.frag" />

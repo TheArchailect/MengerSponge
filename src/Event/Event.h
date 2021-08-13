@@ -6,6 +6,15 @@ struct CAMERA_ROTATION
     float pitch = 0;
 };
 
+enum SCENE_NUMBER {
+    S_ONE,
+    S_TWO,
+    S_THREE,
+    S_FOUR,
+    S_FIVE,
+    S_SIX,
+};
+
 template <typename T>
 class Event 
 {
@@ -15,7 +24,8 @@ protected:
 public:
     Event() = default;
     Event(T type, const std::string& name = "") : EventType(type), EventName(name) {};
-    Event(T type, int s, const std::string& name = "") : EventType(type), EventName(name), scene(s) { std::cout << "Scene change constructor" << std::endl; };
+    Event(T type, SCENE_NUMBER scene, const std::string& name = "") : EventType(type), EventName(name), SceneNumber(scene) {};
+    Event(T type, int d, const std::string& name = "") : EventType(type), EventName(name), division(d) {};
     Event(T type, int w, int h, const std::string& name = "") : EventType(type), EventName(name), windowWidth(w), windowHeight(h) {};
     Event(T type, CAMERA_ROTATION rotation, const std::string& name = "") : EventType(type), EventName(name), m_CameraRotation(rotation) {};
     Event(T type, bool b_Update, const std::string& name = "") : EventType(type), EventName(name), b_CameraUpdate(b_Update) {};
@@ -28,8 +38,9 @@ public:
     int windowWidth = 0;
     int windowHeight = 0;
     CAMERA_ROTATION m_CameraRotation;
+    SCENE_NUMBER SceneNumber = SCENE_NUMBER::S_ONE;
     bool b_CameraUpdate = false;
-    int scene = 0;
+    int division = 0;
 };
     
 template<typename T>

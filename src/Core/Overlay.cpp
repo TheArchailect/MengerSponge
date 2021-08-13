@@ -69,12 +69,14 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
             );
         }
         {
+            int x = m_OverlayData->Resolution.x;
+            int y = m_OverlayData->Resolution.y;
             sprintf_s
             (
                 str,
                 "Resolution: %d x %d",
-                m_OverlayData->Resolution.x,
-                m_OverlayData->Resolution.y
+                x,
+                y
             );
             gltSetText(field, str);
             gltDrawText2DAligned

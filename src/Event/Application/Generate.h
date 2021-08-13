@@ -3,8 +3,8 @@
 
 class Generate : public Event<ApplicationEvent> {
 public:
-    Generate()
-        : Event<ApplicationEvent>(ApplicationEvent::GENERATE, "generate geometry event") {}
+    Generate(int division)
+        : Event<ApplicationEvent>(ApplicationEvent::GENERATE, division, "generate geometry event") {}
     virtual ~Generate() = default;
 public:
 };

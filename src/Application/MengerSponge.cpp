@@ -1,19 +1,8 @@
 #include "MengerSponge.h"
 
-MengerSponge::MengerSponge(unsigned int width, unsigned int height) : Application(width, height)
+MengerSponge::MengerSponge(uint32_t width, uint32_t height) : Application(width, height)
 {
-    std::cout << "Application sub-class constructor" << std::endl;
-    Init();
     RegisterCallbacks();
-
-    // material setup, needs to be moved out of here 
-    float ambient[4] = { 0.0f, 0.1f, 0.06f, 1.0f };
-    float diffuse[4] = { 0.0f,0.50980392f,0.50980392f,1.0f };
-    float specular[4] = { 0.50196078f,0.50196078f,0.50196078f,1.0f };
-    float shine = 32.0f;
-    // material end
-
-    CyanPlastic = new Material(ambient, diffuse, specular, shine);
     SceneNumber = SCENE_NUMBER::S_ONE;
     OverlayState = OVERLAY_STATE::S_FPS_ONLY;
     m_Overlay = new Overlay();
@@ -21,24 +10,17 @@ MengerSponge::MengerSponge(unsigned int width, unsigned int height) : Applicatio
 
 void MengerSponge::Tick()
 {
-    super::GetUtils().DeltaTime();
-    super::GetUtils().FrameRate();
-    CameraUpdate e;
-    m_EventManager->CameraDispatcher.Post(e);
-    super::Clear();
-    m_Overlay->Render(OverlayState);
-    RenderFrame();
-    super::m_Input->Update();
-    // update overlay could be somewhere else
+    if (b_IsRunning)
     {
-        m_Overlay->m_OverlayData->Resolution = glm::vec2(1920, 1080); // TO DO
-        m_Overlay->m_OverlayData->GeometrySize = m_Scenes.at(SceneNumber)->GeometrySize();
-        m_Overlay->m_OverlayData->LOD = m_Scenes.at(SceneNumber)->CurrentSubdivision + 1; // 0 is 1 subdivision
-        m_Overlay->m_OverlayData->BackFaceCulling = true; // TO DO
-        m_Overlay->m_OverlayData->DepthBuffering = true;
-        m_Overlay->m_OverlayData->LightCount = 1; // TO DO
-        m_Overlay->m_OverlayData->SceneNumber = SceneNumber; // TO DO
-        m_Overlay->m_OverlayData->RefreshRate = "60hz"; // TO DO
+        super::GetUtils().DeltaTime();
+        super::GetUtils().FrameRate();                
+        UpdateOverlay();                               
+        CameraUpdate e;                              
+        m_EventManager->CameraDispatcher.Post(e);      
+        super::Clear();                                 
+        m_Overlay->Render(OverlayState);                
+        RenderFrame();
+        super::m_Input->Update();          
     }
 }
 
@@ -81,8 +63,20 @@ void MengerSponge::RegisterCallbacks()
 
 void MengerSponge::RenderFrame()
 {
-    //super::SetMaterial(*CyanPlastic); // only in fixed function
     m_Scenes.at(SceneNumber)->Render();
+}
+
+void MengerSponge::UpdateOverlay()
+{
+    m_Overlay->m_OverlayData->Resolution = glm::vec2(1920, 1080); // TO DO
+    m_Overlay->m_OverlayData->GeometrySize = m_Scenes.at(SceneNumber)->GeometrySize();
+    m_Overlay->m_OverlayData->LOD = m_Scenes.at(SceneNumber)->CurrentSubdivision + 1; // 0 is 1 subdivision
+    m_Overlay->m_OverlayData->BackFaceCulling = true; // TO DO
+    m_Overlay->m_OverlayData->DepthBuffering = true;
+    m_Overlay->m_OverlayData->LightCount = 1; // TO DO
+    m_Overlay->m_OverlayData->SceneNumber = SceneNumber; // TO DO
+    m_Overlay->m_OverlayData->RefreshRate = "60hz"; // TO DO
+    m_Overlay->m_OverlayData->TriCount = m_Scenes.at(SceneNumber)->TriangleCount();
 }
 
 void MengerSponge::ToggleOverlayDisplay(const Event<ApplicationEvent>& e)
@@ -94,9 +88,8 @@ void MengerSponge::ToggleOverlayDisplay(const Event<ApplicationEvent>& e)
 void MengerSponge::ChangeScene(const Event<ApplicationEvent>& e)
 {
     m_Scenes.at(SceneNumber)->End();
-    SceneNumber = (SCENE_NUMBER)e.scene;
+    SceneNumber = e.SceneNumber;
     m_Scenes.at(SceneNumber)->Begin();
-    std::cout << e.scene << std::endl;
 }
 
 bool MengerSponge::Init()
@@ -107,12 +100,12 @@ bool MengerSponge::Init()
         super::GetWindow().GetWidth(), 
         super::GetWindow().GetHeight()
     );
-    m_Scenes.at(SCENE_NUMBER::S_ONE)->Begin();
     m_Scenes.at(SCENE_NUMBER::S_TWO) = new ModernScene
     (
         super::GetWindow().GetWidth(),
         super::GetWindow().GetHeight()
     );
+    m_Scenes.at(SceneNumber)->Begin();
     return true; // do some checks here to asset all scenes are initialised
 }
 
@@ -128,4 +121,6 @@ void MengerSponge::End(const Event<ApplicationEvent>& e)
 {
     super::b_IsRunning = false;
     super::End(e);
+    m_Scenes.clear();
+    delete m_Overlay;
 }

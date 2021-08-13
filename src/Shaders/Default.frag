@@ -15,6 +15,8 @@ uniform mat4 Model;
 
 void main()
 {
+	// dont do this in the shader
+	//mat4 NormalMatrix = transpose(inverse(Model * View));
 	vec3 Color = vec3(0.5, 0.1, 0.3);
 	vec3 Ambient = 0.05 * Color;
 	vec3 LightDirection = normalize(LightPosition - Position);

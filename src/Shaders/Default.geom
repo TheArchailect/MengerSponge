@@ -13,10 +13,9 @@ void main() {
     vec3 B = gl_in[2].gl_Position.xyz - gl_in[0].gl_Position.xyz;
     vec3 n =  normalize(cross(A, B));
     
-
     for (int i = 0; i < 3; i++) {
         gl_Position = Projection * View * Model * gl_in[i].gl_Position; 
-        Position = gl_in[i].gl_Position.xyz;
+        Position = (Model * gl_in[i].gl_Position).xyz;
         Normal = n;
         EmitVertex();
     }
