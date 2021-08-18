@@ -19,13 +19,14 @@ public:
 	GLfloat Ka[4];
 	GLfloat Kd[4];
 	GLfloat Ks[4];
-	GLfloat n[0];
+	GLfloat n[1];
 };
 
 class Scene
 {
 public: 
 	Scene(int width, int height);
+
 public:
 	virtual void Begin() = 0;
 	virtual void End() = 0;
@@ -40,9 +41,10 @@ protected:
 	virtual void SetMaterial(const Material& m) = 0;
 
 public:
-	int GeometrySize();
+	unsigned long long GeometrySize();
 	int TriangleCount();
-	unsigned int CurrentSubdivision;			
+	uint32_t CurrentSubdivision;
+	uint32_t MengerSize;
 
 protected:
 	void Subdivide(glm::vec3 Position, float s, int subd);
@@ -50,21 +52,16 @@ protected:
 
 protected:
 	Mesh* m_VAO;
+	Mesh* m_Grid;
 	int IndexOffset;				
 	std::vector<Vertex> m_Sponge;
 	std::vector<unsigned int> m_Indices;
 	Camera* m_Camera;				
 	typedef Scene super;
 	bool b_IsActive;
-	Material* CyanPlastic;
-	// lighting TO DO make class / struct
-	GLfloat light_ambient[4] = { 0.1, 0.1, 0.1, 1.0 };
-	GLfloat light_diffuse[4] = { 1.0, 1.0, 1.0, 1.0 };
-	GLfloat light_specular[4] = { 0.0, 0.0, 0.0, 1.0 };
-	GLfloat light_position[4] = { 1.0, 200.0, -100.0, 0.0 };
 
-private:
-	
-	
+	Material* Mat1;
+	Material* Mat2;
+	Material* Mat3;
 };
 

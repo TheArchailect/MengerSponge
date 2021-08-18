@@ -8,10 +8,10 @@ FixedFunctionScene::FixedFunctionScene(int width, int height) : Scene(width, hei
 
 void FixedFunctionScene::Begin()
 {   
+    Update();
     super::b_IsActive = true;
-    super::Subdivide(glm::vec3(0, 0, 0), 10, CurrentSubdivision);
+    super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
     m_VAO = new Mesh(m_Sponge, m_Indices);
-    glEnable(GL_LIGHTING);
 }
 
 void FixedFunctionScene::End()
@@ -19,43 +19,50 @@ void FixedFunctionScene::End()
     super::b_IsActive = false;
     glDisable(GL_LIGHTING);
     glLoadIdentity();
-    //m_Sponge.clear();
-    //m_Indices.clear();
+    super::IndexOffset = 0;
+    m_Sponge.clear();
+    m_Indices.clear();
     delete m_VAO;
-
 }
 
 void FixedFunctionScene::Render()
-{
-    SetMaterial(*CyanPlastic);
-    Update();
-    glPushMatrix(); 
+{   
+    glPushMatrix();
     glm::mat4 v = m_Camera->GetView();
     glMultMatrixf((GLfloat*)&v);
+    Lighting();
+    glPushMatrix();
+    SetMaterial(*Mat2);
+    glm::mat4 m = m_VAO->GetTransform();
+    glMultMatrixf((GLfloat*)&m);
     m_VAO->DrawLegacy();
-    Application::Get().GetWindow().Update();
-    // lighting start
-    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    // lighting end
     glPopMatrix();
+
+    SetMaterial(*Mat1);
+    int s = 60;
+    for (int x = -s; x < s; ++x)
+    {
+        for (int z = -s; z < s; ++z)
+        {
+            glPushMatrix();
+            glTranslatef(x, 0, z);
+            m_Grid->DrawLegacy();
+            glPopMatrix();            
+        }
+    }
+    glPopMatrix();
+    Application::Get().GetWindow().Update();
 }
 
 void FixedFunctionScene::GeometryGenerate(const Event<ApplicationEvent>& e)
 {
-    std::cout << "Geo Generate: IM" << std::endl;
     if (super::b_IsActive)
     {
-        std::cout << "inner block" << std::endl;
         super::CurrentSubdivision += e.division;
         super::IndexOffset = 0; // TO DO unused in IM
         m_Sponge.clear();
         m_Indices.clear();
-        super::Subdivide(glm::vec3(0, 0, 0), 15, CurrentSubdivision);
+        super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
         m_VAO = new Mesh(m_Sponge, m_Indices);
     }
 }
@@ -79,14 +86,39 @@ void FixedFunctionScene::Update()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glm::mat4 p = m_Camera->GetProjection();
-    glMultMatrixf((GLfloat*)&p);
+    glLoadMatrixf(glm::value_ptr(p));
     glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 
 void FixedFunctionScene::SetMaterial(const Material& m)
 {
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, m.Ka);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, m.Kd);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m.Ks);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, m.n);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, m.Ka);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, m.Kd);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, m.Ks);
+    glMaterialfv(GL_FRONT, GL_SHININESS, m.n);
+}
+
+void FixedFunctionScene::Lighting()
+{
+    GLfloat ambient[] = { 0.1, 0.1, 0.1, 1.0 };
+    GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat position[] = 
+    { 
+        super::m_Camera->m_Position.x, 
+        super::m_Camera->m_Position.y, 
+        super::m_Camera->m_Position.z, 1.0 
+    };
+    GLfloat lmodel_ambient[] = { 0.4, 0.4, 0.4, 1.0 };
+    GLfloat local_view[] = { 1.0 };
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+    glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local_view);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
 }

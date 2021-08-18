@@ -12,7 +12,7 @@ public:
 		DepthBuffering = true;				// TO DO
 		BackFaceCulling = true;				// TO DO
 		Resolution = glm::vec2(800, 600);	// TO DO
-		RefreshRate = "_";					// TO DO
+		RefreshRate = 0;					// TO DO
 		SceneNumber = 0;		// TO DO
 		LOD = 1;							// TO DO 
 		GeometrySize = 9;					// TO DO
@@ -24,10 +24,10 @@ public:
 	bool DepthBuffering;
 	bool BackFaceCulling;
 	glm::vec2 Resolution;
-	std::string RefreshRate;
+	int RefreshRate;
 	int SceneNumber;
 	int LOD;
-	int GeometrySize;
+	unsigned long long GeometrySize;
 
 };
 

@@ -3,6 +3,7 @@
 #include "../Core/Scenes/Scene.h"
 #include "../Core/Scenes/ModernScene.h"
 #include "../Core/Scenes/FixedFunctionScene.h"
+#include "../Core/Scenes/GPUAnimatedGeometry.h"
 #include "../Core/Overlay.h"
 #include "../Core/include.h"
 
@@ -13,7 +14,7 @@ public:
     void Run() override;   
 
 private:
-    bool Init() override;
+    void Init() override;
     void End(const Event<ApplicationEvent>& e) override;
     void Tick() override;
 

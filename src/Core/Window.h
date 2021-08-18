@@ -28,5 +28,6 @@ private:
 	SDL_Window* m_Window;
 	SDL_GLContext m_Context;
 	SDL_Renderer* m_Renderer;
+	bool vsync;
 };
 

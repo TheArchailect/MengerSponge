@@ -6,7 +6,7 @@ Camera::Camera(int width, int height)
 {
 	Pitch = -25;
 	Yaw = -90;
-	m_CameraSpeed = 8.5f;
+	m_CameraSpeed = 8.0f;
 	Aspect = (float)width / (float)height;
 	FOV = 65.0f;
 	m_Forward = glm::vec3(0.0f, 0.0f, -1.0f); // gets recalculated immidiately 
@@ -40,22 +40,17 @@ void Camera::Update(const Event<CameraEvent>& e)
 	m_Forward.y = sin(glm::radians(Pitch));
 	m_Forward.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
 	m_Forward = glm::normalize(m_Forward);
-
-	//glm::vec3 m_Right = glm::normalize(glm::cross(m_Forward, glm::vec3(0, 1, 0)));
-	//m_Up = glm::normalize(glm::cross(m_Right, m_Forward));
-
 	// update the translation
-	if (m_State.forward) m_Position += m_CameraSpeed * m_Forward * DeltaTime;
-	if (m_State.backward) m_Position -= m_CameraSpeed * m_Forward * DeltaTime;
-	if (m_State.left) m_Position -= m_CameraSpeed * glm::normalize(glm::cross(m_Forward, m_Up)) * DeltaTime;
-	if (m_State.right) m_Position += m_CameraSpeed * glm::normalize(glm::cross(m_Forward, m_Up)) * DeltaTime;
-	if (m_State.up) m_Position += m_CameraSpeed * m_Up * DeltaTime;
-	if (m_State.down) m_Position -= m_CameraSpeed * m_Up * DeltaTime;
+	if (m_State.forward) m_Position += (m_CameraSpeed * m_Forward) * DeltaTime;
+	if (m_State.backward) m_Position -= (m_CameraSpeed * m_Forward) * DeltaTime;
+	if (m_State.left) m_Position -= (m_CameraSpeed * glm::normalize(glm::cross(m_Forward, m_Up))) * DeltaTime;
+	if (m_State.right) m_Position += (m_CameraSpeed * glm::normalize(glm::cross(m_Forward, m_Up))) * DeltaTime;
+	if (m_State.up) m_Position += (m_CameraSpeed * m_Up) * DeltaTime;
+	if (m_State.down) m_Position -= (m_CameraSpeed * m_Up) * DeltaTime;
 }
 
 void Camera::ViewPortResize(const Event<CameraEvent>& e)
 {
-	//ALT_CORE_INFO("Camera viewport resize event: {0}, {1}, {2}", e.GetName(), e.windowWidth, e.windowHeight);
 	Aspect = (float)e.windowWidth / (float)e.windowHeight;
 	Projection = glm::perspective(glm::radians(FOV), Aspect, 0.1f, 1000.0f);
 }
@@ -91,7 +86,7 @@ glm::quat Camera::ToQuaternion(float yaw, float pitch, float roll)
 void Camera::Rotate(const Event<CameraEvent>& e)
 {
 	
-	Yaw += (e.m_CameraRotation.yaw * Application::Get().GetUtils().m_DeltaTime * m_CameraSpeed);
+	Yaw += (e.m_CameraRotation.yaw * m_CameraSpeed) * Application::Get().GetUtils().m_DeltaTime;
 
 	if (Yaw > 360.0f)
 	{
@@ -112,7 +107,7 @@ void Camera::Rotate(const Event<CameraEvent>& e)
 	}
 	else
 	{
-		Pitch += (e.m_CameraRotation.pitch * Application::Get().GetUtils().m_DeltaTime * m_CameraSpeed);
+		Pitch += (e.m_CameraRotation.pitch * m_CameraSpeed) * Application::Get().GetUtils().m_DeltaTime;
 	}
 }
 

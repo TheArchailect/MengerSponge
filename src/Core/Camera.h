@@ -29,6 +29,7 @@ public:
 	float Yaw;
 	float Pitch;
 	glm::vec3 m_Position;
+	glm::vec3 m_Forward;
 
 private:
 	void Rotate(const Event<CameraEvent>& e);
@@ -42,7 +43,6 @@ private:
 private:
 	glm::mat4 Projection;
 	glm::mat4 View;
-	glm::vec3 m_Forward;
 	glm::vec3 m_Up;
 	float FOV;
 	float Aspect;

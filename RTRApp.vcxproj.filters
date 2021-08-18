@@ -57,6 +57,9 @@
     <ClCompile Include="src\Geometry\Vertex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Scenes\GPUAnimatedGeometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\Core\Application.h">
@@ -164,10 +167,14 @@
     <ClInclude Include="src\Geometry\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Core\Scenes\GPUAnimatedGeometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\Default.vert" />
     <None Include="src\Shaders\Default.frag" />
     <None Include="src\Shaders\Default.geom" />
+    <None Include="src\Shaders\GPUAnimatedGeometry.vert" />
   </ItemGroup>
 </Project>

@@ -12,6 +12,7 @@ private:
 	void RegisterCallbacks() override;
 	void Update() override;
 	void SetMaterial(const Material& m) override;
+	void Lighting();
 	
 protected:
 	void GeometryGenerate(const Event<ApplicationEvent>& e) override;

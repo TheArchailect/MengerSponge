@@ -7,6 +7,8 @@ std::unique_ptr<Window> Window::Create(const WindowData& properties, bool FullSc
 
 Window::Window(const WindowData& properties, bool FullScreen)
 {
+	SDL_LogSetPriority(SDL_LOG_CATEGORY_CUSTOM, SDL_LOG_PRIORITY_VERBOSE);
+	vsync = true;
 	Init(properties);
 	RegisterCallbacks();
 	if (FullScreen)
@@ -41,7 +43,6 @@ void Window::WindowResize(const Event<WindowEvent>& e)
 	m_Data.Height = e.windowHeight;
 	m_Data.Width = e.windowWidth;
 	glViewport(0, 0, m_Data.Width, m_Data.Height);
-	//ALT_CORE_INFO("Window Resize Event: {0}, {1}", e.windowWidth, e.windowHeight);
 	CameraViewportResize c(static_cast<float>(m_Data.Width), static_cast<float>(m_Data.Height));
 	EventManager::Get().CameraDispatcher.Post(c);
 }
@@ -55,10 +56,10 @@ void Window::Init(const WindowData& properties)
 
 	if (!b_SDLInitialised)
 	{
+		
 		if (SDL_Init(SDL_INIT_VIDEO) != 0)
 		{
-			std::cout << "SDL2 video subsystem couldn't be initialized. Error:" << std::endl;
-			//ALT_CRITICAL("SDL2 video subsystem couldn't be initialized. Error: {0}", SDL_GetError());
+			SDL_LogCritical(SDL_LOG_CATEGORY_CUSTOM, "SDL2 video subsystem couldn't be initialized.");
 		}
 		else b_SDLInitialised = true;
 	}
@@ -93,11 +94,10 @@ void Window::Init(const WindowData& properties)
 
 	m_Context = SDL_GL_CreateContext(m_Window);
 	SDL_GL_MakeCurrent(m_Window, m_Context);
-	SDL_GL_SetSwapInterval(1); // Enable vsync
+	SDL_GL_SetSwapInterval(vsync);
 
-	//ALT_CORE_INFO("Loading GLAD: {0}", gladLoadGL());
 	if (!gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress)) {
-		std::cout << "glad load error" << std::endl;
+		SDL_LogCritical(SDL_LOG_CATEGORY_CUSTOM, "GLAD couldn't be initialized.");
 	}
 
 	const GLubyte* vendor = glGetString(GL_VENDOR);
@@ -107,18 +107,10 @@ void Window::Init(const WindowData& properties)
 	glGetIntegerv(GL_MAJOR_VERSION, &major);
 	glGetIntegerv(GL_MINOR_VERSION, &minor);
 	const GLubyte* glslVersion = glGetString(GL_SHADING_LANGUAGE_VERSION);
-	//ALT_CORE_INFO
-	//(
-	//	"GL Renderer: {0}, "
-	//	"GL Version: {1}, "
-	//	"GLSL Version: {2}"
-	//	, renderer, version, glslVersion
-	//);
 }
 
 void Window::ShutDown(const Event<WindowEvent>& e)
 {
-	//ALT_CORE_WARNING("closing SDL2 window: {0}", m_Data.Title);
 	SDL_DestroyWindow(m_Window);
 	SDL_GL_DeleteContext(m_Context);
 	SDL_Quit();

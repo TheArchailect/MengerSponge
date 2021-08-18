@@ -1,5 +1,0 @@
-﻿  Input.cpp
-C:\Dev\MengerSponge\Src\Core\Input.cpp(157,15): warning C4244: '=': conversion from 'Sint32' to 'float', possible loss of data
-C:\Dev\MengerSponge\Src\Core\Input.cpp(158,25): warning C4244: '=': conversion from 'Sint32' to 'float', possible loss of data
-  RTRApp.vcxproj -> C:\Dev\MengerSponge\build\Debug - x64\A1.exe
-  0 File(s) copied

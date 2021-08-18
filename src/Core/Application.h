@@ -10,8 +10,7 @@ class Application
 public:
 	Application(uint32_t width, uint32_t height);
 	virtual void Run() = 0;
-	virtual bool Init() = 0;
-	
+	virtual void Init();
 
 private:
 	virtual void Tick() = 0;
@@ -26,15 +25,18 @@ public:
 	static inline Application& Get() { return *s_Instance; }
 
 protected:
+	std::unique_ptr<Window> m_Window;
 	typedef Application super;
 	bool m_FullScreen;
 	Input* m_Input;
 	EventManager* m_EventManager;
 	bool b_IsRunning;
+	bool BackFaceCulling;
+	bool DepthTesting;
+	bool Lighting;
 
 private:
 	static EngineUtils* m_Utils;
-	std::unique_ptr<Window> m_Window;
 	static Application* s_Instance;
 
 };

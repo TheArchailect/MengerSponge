@@ -14,8 +14,29 @@ Application::Application(uint32_t width, uint32_t height)
     (
         Window::Create({ "Menger Sponge", width, height}, m_FullScreen)
     );
-    m_Input = new Input(static_cast<SDL_Window*>(m_Window->GetNativeWindow()));
+    m_Input = new Input
+    (
+        static_cast<SDL_Window*>(m_Window->GetNativeWindow())
+    );
     m_Utils = new EngineUtils();
+    BackFaceCulling = true;
+    DepthTesting = true;
+    Lighting = true;
+}
+
+void Application::Init()
+{
+    if (DepthTesting)
+        glEnable(GL_DEPTH_TEST);
+    if (BackFaceCulling)
+    {
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+    }
+    glFrontFace(GL_CCW);
+    glEnable(GL_BLEND);
+    glBlendEquation(GL_FUNC_ADD);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void Application::End(const Event<ApplicationEvent>& e)
@@ -27,13 +48,6 @@ void Application::End(const Event<ApplicationEvent>& e)
 
 void Application::Clear()
 {
-    glClearColor(1, 1, 1, 1.0);
+    glClearColor(0.2, 0.2, 0.2, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CCW);
-    glEnable(GL_BLEND);
-    glBlendEquation(GL_FUNC_ADD);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

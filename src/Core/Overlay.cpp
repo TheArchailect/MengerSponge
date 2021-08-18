@@ -11,11 +11,11 @@ Overlay::Overlay()
 void Overlay::Render(OVERLAY_STATE OverlayState)
 {
     gltBeginDraw();
-    char str[30];
-    float ZOffset = 28;
+    char str[64];
+    float ZOffset = 30;
     if (!OverlayState == OVERLAY_STATE::S_FPS_ONLY)
     {
-        gltColor(1, 0, 0, 0.6);
+        gltColor(1, 0, 0, 1);
         {
             sprintf_s(str, "Triangles: %d", m_OverlayData->TriCount);
             gltSetText(field, str);
@@ -43,7 +43,7 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
             );
         }
         {
-            sprintf_s(str, "Depth Buffering: %d", m_OverlayData->DepthBuffering); // TO DO / true / false /
+            sprintf_s(str, "Depth Buffering: %d", m_OverlayData->DepthBuffering);
             gltSetText(field, str);
             gltDrawText2DAligned
             (
@@ -71,12 +71,14 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
         {
             int x = m_OverlayData->Resolution.x;
             int y = m_OverlayData->Resolution.y;
+            int ref = m_OverlayData->RefreshRate;
             sprintf_s
             (
                 str,
-                "Resolution: %d x %d",
+                "Resolution: %d x %d, %d Hz",
                 x,
-                y
+                y, 
+                ref
             );
             gltSetText(field, str);
             gltDrawText2DAligned
@@ -116,7 +118,7 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
             );
         }
         {
-            sprintf_s(str, "Geometry Size: %d bytes", m_OverlayData->GeometrySize);
+            sprintf_s(str, "Geometry Size: %llu bytes", m_OverlayData->GeometrySize);
             gltSetText(field, str);
             gltDrawText2DAligned
             (
@@ -130,7 +132,7 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
         }
     }
     // FPS ONLY
-    gltColor(1, 1, 1, 0.9);
+    gltColor(1, 0, 0, 1);
     { 
         sprintf_s(str, "FPS: %.2f", Application::Get().GetUtils().m_FPS);
         gltSetText(field, str);
@@ -139,7 +141,7 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
             field,
             0, 
             Application::Get().GetWindow().m_Data.Height, 
-            1.3f, 
+            1.0f, 
             GL_LEFT, 
             GLT_BOTTOM
         );

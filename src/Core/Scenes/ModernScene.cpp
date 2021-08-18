@@ -17,7 +17,7 @@ ModernScene::ModernScene(int width, int height) : Scene(width, height)
 void ModernScene::Begin()
 {
 	super::b_IsActive = true;
-	super::Subdivide(glm::vec3(0, 0, 0), 10, CurrentSubdivision);
+	super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
 	m_VAO = new Mesh(m_Sponge, m_Indices);
 }
 
@@ -41,16 +41,13 @@ void ModernScene::Render()
 
 void ModernScene::GeometryGenerate(const Event<ApplicationEvent>& e)
 {
-	std::cout << "Generate Geo: MM" << std::endl;
 	if (super::b_IsActive)
 	{
-		std::cout << "inner block" << std::endl;
 		super::CurrentSubdivision += e.division;
 		super::IndexOffset = 0;
 		m_Sponge.clear();
 		m_Indices.clear();
-		float size = 15;
-		super::Subdivide(glm::vec3(0, 0, 0), size, CurrentSubdivision);
+		super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
 		m_VAO = new Mesh(m_Sponge, m_Indices);
 	}
 }
@@ -69,6 +66,7 @@ void ModernScene::RegisterCallbacks()
 	);
 }
 
+// TODO update shader class to be updated more specficialy per app
 void ModernScene::Update()
 {
 	UpdateShader
@@ -81,6 +79,7 @@ void ModernScene::Update()
 	);
 }
 
+// TODO
 void ModernScene::SetMaterial(const Material& m)
 {
 

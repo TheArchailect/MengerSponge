@@ -5,17 +5,45 @@ Scene::Scene(int width, int height)
     b_IsActive = false;
 	m_Camera = new Camera(width, height);
 	CurrentSubdivision = 0;
-	Subdivide(glm::vec3(0, 0, 0), 10, CurrentSubdivision);
+	MengerSize = 20;
+	Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
 	m_VAO = new Mesh(m_Sponge, m_Indices);
 	
-	// material setup
-	float ambient[4] = { 0.0f, 0.1f, 0.06f, 1.0f };
-	float diffuse[4] = { 0.0f,0.50980392f,0.50980392f,1.0f };
-	float specular[4] = { 0.50196078f,0.50196078f,0.50196078f,1.0f };
-	float shine = 32.0f;
-	CyanPlastic = new Material(ambient, diffuse, specular, shine);
-	// material end
+	std::vector<Vertex> GridVerts;
+	std::vector<uint32_t> GridIndices;
+	int gwidth = 1;
+	int gdepth = 1;
 
+	GridVerts.push_back(Vertex(glm::vec3(gwidth, -10, -gdepth), glm::vec3(0, 1, 0)));
+	GridVerts.push_back(Vertex(glm::vec3(-gwidth, -10, gdepth), glm::vec3(0, 1, 0)));
+	GridVerts.push_back(Vertex(glm::vec3(-gwidth, -10, -gdepth), glm::vec3(0, 1, 0)));
+	GridVerts.push_back(Vertex(glm::vec3(gwidth, -10, -gdepth), glm::vec3(0, 1, 0)));
+	GridVerts.push_back(Vertex(glm::vec3(gwidth, -10, gdepth), glm::vec3(0, 1, 0)));
+	GridVerts.push_back(Vertex(glm::vec3(-gwidth, -10, gdepth), glm::vec3(0, 1, 0)));
+	
+	for (int i = 2; i < GridVerts.size(); i += 3)
+	{
+		GridIndices.push_back(i);
+		GridIndices.push_back(i - 1);
+		GridIndices.push_back(i - 2);
+	}
+	m_Grid = new Mesh(GridVerts, GridIndices);
+
+	// material setup
+	GLfloat no_mat[] = { 0.0, 0.0, 0.0, 1.0 };
+	GLfloat mat_ambient[] = { 0.7, 0.7, 0.7, 1.0 };
+	GLfloat mat_ambient_color[] = { 0.8, 0.8, 0.2, 1.0 };
+	GLfloat mat_diffuse[] = { 0.1, 0.5, 0.8, 1.0 };
+	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat no_shininess = 0.0;
+	GLfloat low_shininess = 5.0;
+	GLfloat high_shininess = 100.0;
+	GLfloat mat_emission[] = { 0.3, 0.2, 0.2, 0.0 };
+
+	Mat1 = new Material(no_mat, mat_diffuse, no_mat, no_shininess);
+	Mat2 = new Material(no_mat, mat_diffuse, mat_specular, low_shininess);
+	Mat3 = new Material(mat_ambient, mat_diffuse, no_mat, no_shininess);
+	// material end
 }
 
 void Scene::Subdivide(glm::vec3 Position, float s, int subd)
@@ -134,9 +162,10 @@ void Scene::Compile(glm::vec3 origin, float size)
 	m_Indices.push_back(4 + (8 * IndexOffset));
 }
 
-int Scene::GeometrySize()
+unsigned long long Scene::GeometrySize()
 {
-    return sizeof(glm::vec3) * m_Sponge.size();
+	unsigned long value = (sizeof(Vertex) * m_Sponge.size());
+    return value;
 }
 
 int Scene::TriangleCount()
