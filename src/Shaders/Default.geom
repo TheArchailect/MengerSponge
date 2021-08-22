@@ -16,7 +16,7 @@ void main() {
     for (int i = 0; i < 3; i++) {
         gl_Position = Projection * View * Model * gl_in[i].gl_Position; 
         Position = (Model * gl_in[i].gl_Position).xyz;
-        Normal = n;
+        Normal = mat3(transpose(inverse(Model))) * n;
         EmitVertex();
     }
     EndPrimitive();

@@ -1,36 +1,50 @@
 #version 460
-// out
 out vec4 FragColor;
-// in
+
 in vec3 Normal;
 in vec3 Position;
-// global
-vec3 LightPosition = vec3(0, 20, 0);
-// uniform
+
 uniform vec3 Camera;
 uniform float SystemTime;
 uniform mat4 Projection;
 uniform mat4 View;
 uniform mat4 Model;
 
+struct Material {
+	vec3 Diffuse;
+	float Shininess;
+};
+
+struct DirectionalLight {
+	vec3 Direction;
+	vec3 Ambient;
+	vec3 Diffuse;
+	vec3 Specular;
+};
+
+uniform DirectionalLight u_Light;
+uniform Material u_Material;
+
+vec3 CalculateDirectionLight(DirectionalLight light, vec3 normal, vec3 vd)
+{
+	// light direction
+	vec3 ld = normalize(-light.Direction);
+	// diffuse shading
+	float diff = max(dot(normal, ld), 0.0);
+	// specular projection
+	vec3 rd = reflect(-ld, normal); // reflection direction
+	float spec = pow(max(dot(vd, rd), 0.0), u_Material.Shininess);
+	// combinations
+	vec3 a = light.Ambient;
+	vec3 d = light.Diffuse * diff * u_Material.Diffuse;
+	vec3 s = light.Specular * spec * u_Material.Diffuse;
+	return a + d + s;
+}
+
 void main()
 {
-	vec3 color = vec3(1.0, 1.0, 1.0);
-	// ambient
-	vec3 ambient = 0.08 * color;
-	// diffuse
-	vec3 lightDirection = normalize(LightPosition - Position);
-	vec3 normal = normalize(Normal);
-	float diff = max(dot(lightDirection, normal), 0.0);
-	vec3 diffuse = diff * color;
-	
-	// specular
-	vec3 viewDirection = normalize(Camera - Position);
-	//vec3 reflectionDirection = reflect(-lightDirection, normal);
-	float specular = 0.0;
-	// blinn
-	vec3 halfwayDirection = normalize(lightDirection + viewDirection);
-	specular = pow(max(dot(normal, halfwayDirection), 0.0), 64);
-	vec3 spec = vec3(0.3) * specular;
-	FragColor = vec4(ambient + diffuse + spec, 1.0);
+	vec3 n = normalize(Normal);
+	vec3 vd = normalize(Camera - Position);
+	vec3 result = CalculateDirectionLight(u_Light, n, vd);
+	FragColor = vec4(result, 1.0);
 } 

@@ -69,7 +69,6 @@ void GPUAnimatedGeometry::GeometryGenerate(const Event<ApplicationEvent>& e)
 		float radius = 10.0f;
 		for (int i = 0; i < m_Sponge.size(); ++i)
 		{
-
 			m_Sponge.at(i).Normal = SphereCast(glm::vec3(0, 0, 0) , m_Sponge.at(i).Position, radius);
 		}
 		// end
@@ -81,15 +80,10 @@ glm::vec3 GPUAnimatedGeometry::SphereCast(glm::vec3 origin, glm::vec3 point, flo
 {
 	glm::vec3 fp(10, 10, 10);
 	glm::vec3 np = glm::normalize(point);
-	float MaxOffset = glm::distance(origin, fp) - radius;
-	glm::vec3 cp = fp / 4.0f;
-	float U = Map(glm::distance(point, origin), glm::distance(cp, origin), glm::distance(fp, origin), 0, 1);
-	glm::vec3 V(0, 0, 0);
-	V.x = abs(Map(point.x, 0, fp.x, 0, 1));
-	V.y = abs(Map(point.y, 0, fp.y, 0, 1));
-	V.z = abs(Map(point.z, 0, fp.z, 0, 1));
-	V = EaseOutCircle(V);
-	return glm::mix(origin, np * MaxOffset , V);
+	float MaxOffset = glm::distance(fp, origin) - radius;
+	glm::vec3 cp = fp / 5.0f;
+	float U = Map(glm::distance(point, origin), glm::distance(cp, origin), glm::distance(fp, origin), 0.5, 1.0f);
+	return glm::mix(point * 0.8f, point * 0.23f, EaseOut(U));
 }
 
 float GPUAnimatedGeometry::Map(float value, float min1, float max1, float min2, float max2)
@@ -97,14 +91,16 @@ float GPUAnimatedGeometry::Map(float value, float min1, float max1, float min2, 
 	return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
 }
 
-glm::vec3 GPUAnimatedGeometry::EaseOutCircle(glm::vec3 v)
+#ifndef PI
+#define PI 3.14159265359
+#endif
+float GPUAnimatedGeometry::EaseOut(float t)
 {
-	return glm::vec3
-	(
-		1 - pow(1 - v.x, 2),
-		1 - pow(1 - v.y, 2),
-		1 - pow(1 - v.z, 2)
-	);
+	//return 1 - cos((t * PI) / 2);
+	//std::cout << t << std::endl;
+	if (t > 0.98) return 0.98;
+	if (t < 0.4) return 0.4;
+	return t;
 }
 
 void GPUAnimatedGeometry::RegisterCallbacks()

@@ -55,6 +55,20 @@ static void UpdateShader
 		camera.m_Position.y, 
 		camera.m_Position.z
 	);
+	// lighting
+	int DirectionLocation = glGetUniformLocation(shader, "u_Light.Direction");
+	glUniform3f(DirectionLocation, -0.2, -1.0, -0.3);
+	int AmbientLocation = glGetUniformLocation(shader, "u_Light.Ambient");
+	glUniform3f(AmbientLocation, 0.05f, 0.05f, 0.05f);
+	int DiffuseLocation = glGetUniformLocation(shader, "u_Light.Diffuse");
+	glUniform3f(DiffuseLocation, 0.4f, 0.4f, 0.4f);
+	int SpecularLocation = glGetUniformLocation(shader, "u_Light.Specular");
+	glUniform3f(SpecularLocation, 0.5f, 0.5f, 0.5f);
+	// materials
+	int MaterialDiffuseLocation = glGetUniformLocation(shader, "u_Material.Diffuse");
+	glUniform3f(MaterialDiffuseLocation, 0.5f, 0.5f, 0.3f);
+	int MaterialShininessLocation = glGetUniformLocation(shader, "u_Material.Shininess");
+	glUniform1f(MaterialShininessLocation, 64);
 }
 
 class Shader

@@ -21,6 +21,6 @@ private:
 private:
 	ShaderProgram* m_Shader;
 	Mesh* m_Axis;
-	glm::vec3 EaseOutCircle(glm::vec3 v);
+	float EaseOut(float t);
 };
 
