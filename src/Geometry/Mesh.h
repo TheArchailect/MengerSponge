@@ -14,6 +14,7 @@ public:
 	virtual ~Mesh() {};
 	void Draw(GLenum ShaderPrimitive);
 	void DrawLegacy();
+	void DrawInstanced();
 	void Update();
 	glm::mat4 GetTransform();
 

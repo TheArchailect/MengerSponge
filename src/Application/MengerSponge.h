@@ -4,6 +4,9 @@
 #include "../Core/Scenes/ModernScene.h"
 #include "../Core/Scenes/FixedFunctionScene.h"
 #include "../Core/Scenes/GPUAnimatedGeometry.h"
+#include "../Core/Scenes/CPUAnimatedGeometry.h"
+#include "../Core/Scenes/InstancedGeometry.h"
+#include "../Core/Scenes/InstancedGeometryGLSL.h"
 #include "../Core/Overlay.h"
 #include "../Core/include.h"
 

@@ -1,33 +1,20 @@
-#include "GPUAnimatedGeometry.h"
+#include "CPUAnimatedGeometry.h"
 #include "../Application.h"
 
-GPUAnimatedGeometry::GPUAnimatedGeometry(int width, int height) : Scene(width, height)
+CPUAnimatedGeometry::CPUAnimatedGeometry(int width, int height) : Scene(width, height)
 {
 	b_IsActive = false;
 	RegisterCallbacks();
 	m_Shader = new ShaderProgram
 	(
-		"src/Shaders/GPUAnimatedGeometry.vert",
+		"src/Shaders/Default.vert",
 		"src/Shaders/Default.geom",
 		"src/Shaders/Default.frag"
 	);
 	glUseProgram(m_Shader->GetShaderProgramID());
-	std::vector<Vertex> v;
-	std::vector<uint32_t> i;
-
-	v.push_back(Vertex(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0)));
-	v.push_back(Vertex(glm::vec3(10, 0, 0), glm::vec3(0, 0, 0)));
-	v.push_back(Vertex(glm::vec3(0, 10, 0), glm::vec3(0, 0, 0)));
-	v.push_back(Vertex(glm::vec3(0, 0, 10), glm::vec3(0, 0, 0)));
-	v.push_back(Vertex(glm::vec3(-10, 0, 0), glm::vec3(0, 0, 0)));
-	v.push_back(Vertex(glm::vec3(0, -10, 0), glm::vec3(0, 0, 0)));
-	v.push_back(Vertex(glm::vec3(0, 0, -10), glm::vec3(0, 0, 0)));
-
-	for (int idx = 0; idx < 7; ++idx) i.push_back(idx);
-	m_Axis = new Mesh(v, i);
 }
 
-void GPUAnimatedGeometry::Begin()
+void CPUAnimatedGeometry::Begin()
 {
 	super::b_IsActive = true;
 	super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
@@ -35,7 +22,7 @@ void GPUAnimatedGeometry::Begin()
 	// TODO generate a keyframe to pass to the gpu
 }
 
-void GPUAnimatedGeometry::End()
+void CPUAnimatedGeometry::End()
 {
 	super::b_IsActive = false;
 	super::IndexOffset = 0;
@@ -45,17 +32,29 @@ void GPUAnimatedGeometry::End()
 	delete m_VAO;
 }
 
-void GPUAnimatedGeometry::Render()
+void CPUAnimatedGeometry::Render()
 {
 	glUseProgram(m_Shader->GetShaderProgramID());
 	Update(m_VAO->GetTransform());
+	float AnimationTime = Map(cos(SDL_GetTicks() / 1000), -1, 1, 0, 1);
+	std::vector<Vertex> mesh;
+	for (int i = 0; i < m_Sponge.size(); ++i)
+	{
+		mesh.push_back
+		(
+			Vertex
+			(
+				glm::mix(m_Sponge.at(i).Position, m_Sponge.at(i).Normal, AnimationTime), 
+				glm::vec3(0, 0, 0)
+			)
+		);
+	}
+	m_VAO = new Mesh(mesh, m_Indices);
 	m_VAO->Draw(GL_TRIANGLES);
-	glPointSize(8);
-	m_Axis->Draw(GL_LINES);
 	Application::Get().GetWindow().Update();
 }
 
-void GPUAnimatedGeometry::GeometryGenerate(const Event<ApplicationEvent>& e)
+void CPUAnimatedGeometry::GeometryGenerate(const Event<ApplicationEvent>& e)
 {
 	if (super::b_IsActive)
 	{
@@ -68,22 +67,24 @@ void GPUAnimatedGeometry::GeometryGenerate(const Event<ApplicationEvent>& e)
 		float radius = 10.0f;
 		for (int i = 0; i < m_Sponge.size(); ++i)
 		{
-			m_Sponge.at(i).Normal = SphereCast(glm::vec3(0, 0, 0) , m_Sponge.at(i).Position, radius);
+			m_Sponge.at(i).Normal = SphereCast(glm::vec3(0, 0, 0), m_Sponge.at(i).Position, radius);
 		}
 		// end
 		m_VAO = new Mesh(m_Sponge, m_Indices);
 	}
 }
 
-glm::vec3 GPUAnimatedGeometry::SphereCast(glm::vec3 origin, glm::vec3 point, float radius)
+glm::vec3 CPUAnimatedGeometry::SphereCast(glm::vec3 origin, glm::vec3 point, float radius)
 {
 	glm::vec3 fp(10, 10, 10);
 	glm::vec3 np = glm::normalize(point);
-	float U = Map(glm::distance(point, origin), 0.33f, glm::distance(fp, origin), 0.0, 1.0f);
-	return glm::mix(np, np * radius, U);
+	float MaxOffset = glm::distance(fp, origin) - radius;
+
+	float U = Map(glm::distance(point, origin), 5.0f, glm::distance(fp, origin), 0.0, 1.0f);
+	return glm::mix(point * 0.7f, point * 0.4f, U);
 }
 
-float GPUAnimatedGeometry::Map(float value, float min1, float max1, float min2, float max2)
+float CPUAnimatedGeometry::Map(float value, float min1, float max1, float min2, float max2)
 {
 	return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
 }
@@ -91,19 +92,19 @@ float GPUAnimatedGeometry::Map(float value, float min1, float max1, float min2, 
 #ifndef PI
 #define PI 3.14159265359
 #endif
-float GPUAnimatedGeometry::EaseOut(float t)
+float CPUAnimatedGeometry::EaseOut(float t)
 {
 	return t;
 }
 
-void GPUAnimatedGeometry::RegisterCallbacks()
+void CPUAnimatedGeometry::RegisterCallbacks()
 {
 	EventManager::Get().ApplicationDispatcher.Subscribe
 	(
 		ApplicationEvent::GENERATE,
 		std::bind
 		(
-			&GPUAnimatedGeometry::GeometryGenerate,
+			&CPUAnimatedGeometry::GeometryGenerate,
 			this,
 			std::placeholders::_1
 		)
@@ -111,7 +112,7 @@ void GPUAnimatedGeometry::RegisterCallbacks()
 }
 
 // TODO update shader class to be updated more specficialy per app
-void GPUAnimatedGeometry::Update(glm::mat4 ModelTransform)
+void CPUAnimatedGeometry::Update(glm::mat4 ModelTransform)
 {
 	UpdateShader
 	(
@@ -119,8 +120,8 @@ void GPUAnimatedGeometry::Update(glm::mat4 ModelTransform)
 		ModelTransform,
 		m_Camera->GetView(),
 		m_Camera->GetProjection(),
-		*m_Camera, 
-		super::m_Mats,
+		*m_Camera,
+		super::m_Mats, 
 		super::m_Lights
 	);
 }

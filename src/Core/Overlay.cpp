@@ -15,7 +15,7 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
     float ZOffset = 30;
     if (!OverlayState == OVERLAY_STATE::S_FPS_ONLY)
     {
-        gltColor(1, 0, 0, 1);
+        gltColor(0.8, 0.8, 0.8, 0.9);
         {
             sprintf_s(str, "Triangles: %d", m_OverlayData->TriCount);
             gltSetText(field, str);
@@ -43,7 +43,10 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
             );
         }
         {
-            sprintf_s(str, "Depth Buffering: %d", m_OverlayData->DepthBuffering);
+            std::string s;
+            if (m_OverlayData->DepthBuffering) s = "On";
+            else s = "Off";
+            sprintf_s(str, "Depth Buffering: %s", s.c_str());
             gltSetText(field, str);
             gltDrawText2DAligned
             (
@@ -56,7 +59,10 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
             );
         }
         {
-            sprintf_s(str, "Back Face Culling: %d", m_OverlayData->BackFaceCulling);
+            std::string s;
+            if (m_OverlayData->BackFaceCulling) s = "On";
+            else s = "Off";
+            sprintf_s(str, "Back Face Culling: %s", s.c_str());
             gltSetText(field, str);
             gltDrawText2DAligned
             (
@@ -132,7 +138,7 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
         }
     }
     // FPS ONLY
-    gltColor(1, 0, 0, 1);
+    gltColor(0.8, 0.8, 0.8, 0.9);
     { 
         sprintf_s(str, "FPS: %.2f", Application::Get().GetUtils().m_FPS);
         gltSetText(field, str);

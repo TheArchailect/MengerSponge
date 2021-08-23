@@ -12,6 +12,7 @@ uniform mat4 Model;
 
 struct Material {
 	vec3 Diffuse;
+    vec3 Specular;
 	float Shininess;
 };
 
@@ -22,8 +23,43 @@ struct DirectionalLight {
 	vec3 Specular;
 };
 
+struct PointLight {    
+    vec3 Position;
+    
+    float Constant;
+    float Linear;
+    float Quadratic;  
+
+    vec3 Ambient;
+    vec3 Diffuse;
+    vec3 Specular;
+};  
+#define POINT_LIGHTS 4  
+uniform PointLight u_PointLights[POINT_LIGHTS];
 uniform DirectionalLight u_Light;
 uniform Material u_Material;
+
+vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 vd)
+{
+    // light direction
+    vec3 ld = normalize(light.Position - Position);
+    // diffuse shading
+    float diff = max(dot(normal, ld), 0.0);
+    // specular shading
+    vec3 rd = reflect(-ld, normal);
+    float spec = pow(max(dot(vd, rd), 0.0), u_Material.Shininess);
+    // attenuation
+    float dist = length(light.Position - Position);
+    float attenuation = 1.0 / (light.Constant + light.Linear * dist + light.Quadratic * (dist * dist));    
+    // combine results
+    vec3 a  = light.Ambient  * u_Material.Diffuse;
+    vec3 d  = light.Diffuse  * diff * u_Material.Diffuse;
+    vec3 s = light.Specular * spec * u_Material.Specular;
+    a  *= attenuation;
+    d  *= attenuation;
+    s *= attenuation;
+    return (a + d + s);
+} 
 
 vec3 CalculateDirectionLight(DirectionalLight light, vec3 normal, vec3 vd)
 {
@@ -46,5 +82,9 @@ void main()
 	vec3 n = normalize(Normal);
 	vec3 vd = normalize(Camera - Position);
 	vec3 result = CalculateDirectionLight(u_Light, n, vd);
+    for (int i = 0; i < POINT_LIGHTS; ++i)
+    {
+        result += CalculatePointLight(u_PointLights[i], n, vd);
+    }
 	FragColor = vec4(result, 1.0);
 } 

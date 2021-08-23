@@ -8,7 +8,7 @@ FixedFunctionScene::FixedFunctionScene(int width, int height) : Scene(width, hei
 
 void FixedFunctionScene::Begin()
 {   
-    Update();
+    Update(glm::mat4(0));
     super::b_IsActive = true;
     super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
     m_VAO = new Mesh(m_Sponge, m_Indices);
@@ -32,13 +32,13 @@ void FixedFunctionScene::Render()
     glMultMatrixf((GLfloat*)&v);
     Lighting();
     glPushMatrix();
-    SetMaterial(*Mat2);
+    SetMaterial(*super::m_Mats.at(0));
     glm::mat4 m = m_VAO->GetTransform();
     glMultMatrixf((GLfloat*)&m);
     m_VAO->DrawLegacy();
     glPopMatrix();
 
-    SetMaterial(*Mat1);
+    SetMaterial(*super::m_Mats.at(1));
     int s = 60;
     for (int x = -s; x < s; ++x)
     {
@@ -81,7 +81,7 @@ void FixedFunctionScene::RegisterCallbacks()
     );
 }
 
-void FixedFunctionScene::Update()
+void FixedFunctionScene::Update(glm::mat4 ModelTransform)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

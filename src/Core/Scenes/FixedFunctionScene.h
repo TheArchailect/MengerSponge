@@ -10,8 +10,8 @@ public:
 
 private:
 	void RegisterCallbacks() override;
-	void Update() override;
-	void SetMaterial(const Material& m) override;
+	void Update(glm::mat4 ModelTransform) override;
+	void SetMaterial(const Material& m);
 	void Lighting();
 	
 protected:

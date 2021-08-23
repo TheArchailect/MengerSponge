@@ -4,10 +4,10 @@
 #include "../../Shaders/ShaderProgram.h"
 
 
-class ModernScene : public Scene
+class InstancedGeometry : public Scene
 {
 public:
-	ModernScene(int width, int height);
+	InstancedGeometry(int width, int height);
 	void Begin() override;
 	void End() override;
 	void Render() override;

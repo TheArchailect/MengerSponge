@@ -1,27 +1,31 @@
-#include "ModernScene.h"
+#include "InstancedGeometryGLSL.h"
 #include "../Application.h"
 
-ModernScene::ModernScene(int width, int height) : Scene(width, height)
+InstancedGeometryGLSL::InstancedGeometryGLSL(int width, int height) : Scene(width, height)
 {
 	b_IsActive = false;
 	RegisterCallbacks();
 	m_Shader = new ShaderProgram
 	(
-		"src/Shaders/Default.vert",
+		"src/Shaders/Instance.vert",
 		"src/Shaders/Default.geom",
 		"src/Shaders/Default.frag"
 	);
 	glUseProgram(m_Shader->GetShaderProgramID());
 }
 
-void ModernScene::Begin()
+void InstancedGeometryGLSL::Begin()
 {
 	super::b_IsActive = true;
 	super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
 	m_VAO = new Mesh(m_Sponge, m_Indices);
+
+	// this is gross
+	m_Camera->m_Position.z = 80;
+	m_Camera->m_Position.y = 45;
 }
 
-void ModernScene::End()
+void InstancedGeometryGLSL::End()
 {
 	super::b_IsActive = false;
 	super::IndexOffset = 0;
@@ -31,15 +35,15 @@ void ModernScene::End()
 	delete m_VAO;
 }
 
-void ModernScene::Render()
+void InstancedGeometryGLSL::Render()
 {
 	glUseProgram(m_Shader->GetShaderProgramID());
-	Update(m_VAO->GetTransform());
-	m_VAO->Draw(GL_TRIANGLES);
+	Update(glm::translate(m_VAO->GetTransform(), glm::vec3(0, 0, 0)));
+	m_VAO->DrawInstanced();
 	Application::Get().GetWindow().Update();
 }
 
-void ModernScene::GeometryGenerate(const Event<ApplicationEvent>& e)
+void InstancedGeometryGLSL::GeometryGenerate(const Event<ApplicationEvent>& e)
 {
 	if (super::b_IsActive)
 	{
@@ -52,14 +56,14 @@ void ModernScene::GeometryGenerate(const Event<ApplicationEvent>& e)
 	}
 }
 
-void ModernScene::RegisterCallbacks()
+void InstancedGeometryGLSL::RegisterCallbacks()
 {
 	EventManager::Get().ApplicationDispatcher.Subscribe
 	(
 		ApplicationEvent::GENERATE,
 		std::bind
 		(
-			&ModernScene::GeometryGenerate,
+			&InstancedGeometryGLSL::GeometryGenerate,
 			this,
 			std::placeholders::_1
 		)
@@ -67,14 +71,14 @@ void ModernScene::RegisterCallbacks()
 }
 
 // TODO update shader class to be updated more specficialy per app
-void ModernScene::Update(glm::mat4 ModelTransform)
+void InstancedGeometryGLSL::Update(glm::mat4 ModelTransform)
 {
 	UpdateShader
 	(
-		m_Shader->GetShaderProgramID(), 
+		m_Shader->GetShaderProgramID(),
 		ModelTransform,
-		m_Camera->GetView(), 
-		m_Camera->GetProjection(), 
+		m_Camera->GetView(),
+		m_Camera->GetProjection(),
 		*m_Camera,
 		super::m_Mats,
 		super::m_Lights

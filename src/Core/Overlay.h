@@ -13,7 +13,7 @@ public:
 		BackFaceCulling = true;				// TO DO
 		Resolution = glm::vec2(800, 600);	// TO DO
 		RefreshRate = 0;					// TO DO
-		SceneNumber = 0;		// TO DO
+		SceneNumber = 0;					// TO DO
 		LOD = 1;							// TO DO 
 		GeometrySize = 9;					// TO DO
 	}

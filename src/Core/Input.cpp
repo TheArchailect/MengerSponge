@@ -92,12 +92,12 @@
 				// scene switch
 				if 
 					(
-						event.key.keysym.sym == SDLK_0 || 
-						event.key.keysym.sym == SDLK_1 ||
+						event.key.keysym.sym == SDLK_1 || 
 						event.key.keysym.sym == SDLK_2 ||
 						event.key.keysym.sym == SDLK_3 ||
 						event.key.keysym.sym == SDLK_4 ||
-						event.key.keysym.sym == SDLK_5
+						event.key.keysym.sym == SDLK_5 ||
+						event.key.keysym.sym == SDLK_6
 					)
 				{
 					if (event.key.state == SDL_PRESSED)
@@ -105,22 +105,22 @@
 						int scene = 0;
 						switch (event.key.keysym.sym)
 						{
-						case SDLK_0:
+						case SDLK_1:
 							scene = 0;
 							break;
-						case SDLK_1:
+						case SDLK_2:
 							scene = 1;
 							break;
-						case SDLK_2:
+						case SDLK_3:
 							scene = 2;
 							break;
-						case SDLK_3:
+						case SDLK_4:
 							scene = 3;
 							break;
-						case SDLK_4:
+						case SDLK_5:
 							scene = 4;
 							break;
-						case SDLK_5:
+						case SDLK_6:
 							scene = 5;
 							break;
 						}

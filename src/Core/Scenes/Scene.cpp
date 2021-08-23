@@ -40,10 +40,15 @@ Scene::Scene(int width, int height)
 	GLfloat high_shininess = 100.0;
 	GLfloat mat_emission[] = { 0.3, 0.2, 0.2, 0.0 };
 
-	Mat1 = new Material(no_mat, mat_diffuse, no_mat, no_shininess);
-	Mat2 = new Material(no_mat, mat_diffuse, mat_specular, low_shininess);
-	Mat3 = new Material(mat_ambient, mat_diffuse, no_mat, no_shininess);
+	m_Mats.push_back(new Material(no_mat, mat_diffuse, no_mat, no_shininess));
+	m_Mats.push_back(new Material(no_mat, mat_diffuse, mat_specular, low_shininess));
+	m_Mats.push_back(new Material(mat_ambient, mat_diffuse, no_mat, no_shininess));
 	// material end
+	// lights
+	m_Lights.push_back(new PointLight(glm::vec3(8, 10, -5), glm::vec3(.1, 0, .02), glm::vec3(1, 0, .2), glm::vec3(1, 1, 1)));
+	m_Lights.push_back(new PointLight(glm::vec3(-8, 10, -5), glm::vec3(0, .1, 0), glm::vec3(0, 1, 0), glm::vec3(1, 1, 1)));
+	m_Lights.push_back(new PointLight(glm::vec3(0, -10, 5), glm::vec3(0, 0, .02), glm::vec3(0, 0, 1), glm::vec3(1, 1, 1)));
+	m_Lights.push_back(new PointLight(glm::vec3(0, 10, 5), glm::vec3(.01, 0, .2), glm::vec3(1, 0, .2), glm::vec3(1, 1, 1)));
 }
 
 void Scene::Subdivide(glm::vec3 Position, float s, int subd)

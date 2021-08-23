@@ -13,8 +13,7 @@ public:
 
 private:
 	void RegisterCallbacks() override;
-	void Update() override;
-	void SetMaterial(const Material& m) override;
+	void Update(glm::mat4 ModelTransform) override;
 	glm::vec3 SphereCast(glm::vec3 origin, glm::vec3 point, float radius);
 	float Map(float value, float min1, float max1, float min2, float max2);
 

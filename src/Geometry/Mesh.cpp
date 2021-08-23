@@ -12,7 +12,7 @@ Mesh::Mesh(std::vector<Vertex> v, std::vector<unsigned int> i)
     m_Transform = glm::rotate
     (
         m_Transform,
-        glm::radians(45.0f),
+        glm::radians(0.0f),
         glm::vec3(0.0f, 1.0f, 0.0f)
     );
 }
@@ -146,6 +146,14 @@ void Mesh::DrawLegacy()
     }
     glEnd();
     glPopMatrix();
+}
+
+void Mesh::DrawInstanced()
+{
+    //
+    glBindVertexArray(VAO);
+    //glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElementsInstanced(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, (void*)0, 9);
 }
 
 void Mesh::Update()

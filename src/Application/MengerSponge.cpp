@@ -80,7 +80,7 @@ void MengerSponge::UpdateOverlay()
     m_Overlay->m_OverlayData->BackFaceCulling = super::BackFaceCulling;
     m_Overlay->m_OverlayData->DepthBuffering = super::DepthTesting;
     m_Overlay->m_OverlayData->LightCount = 1; 
-    m_Overlay->m_OverlayData->SceneNumber = SceneNumber;
+    m_Overlay->m_OverlayData->SceneNumber = SceneNumber + 1;
     m_Overlay->m_OverlayData->RefreshRate = current.refresh_rate;
     m_Overlay->m_OverlayData->TriCount = m_Scenes.at(SceneNumber)->TriangleCount();
 }
@@ -110,6 +110,24 @@ void MengerSponge::Init()
     );
     // scene 2
     m_Scenes.at(SCENE_NUMBER::S_TWO) = new ModernScene
+    (
+        super::GetWindow().GetWidth(),
+        super::GetWindow().GetHeight()
+    );
+    // scene 3
+    m_Scenes.at(SCENE_NUMBER::S_THREE) = new InstancedGeometry
+    (
+        super::GetWindow().GetWidth(),
+        super::GetWindow().GetHeight()
+    );
+    // scene 3
+    m_Scenes.at(SCENE_NUMBER::S_FOUR) = new InstancedGeometryGLSL
+    (
+        super::GetWindow().GetWidth(),
+        super::GetWindow().GetHeight()
+    );
+    // scene 5
+    m_Scenes.at(SCENE_NUMBER::S_FIVE) = new CPUAnimatedGeometry
     (
         super::GetWindow().GetWidth(),
         super::GetWindow().GetHeight()

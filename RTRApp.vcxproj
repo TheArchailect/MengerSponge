@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Scenes\InstancedGeometryGLSL.cpp" />
+    <ClCompile Include="src\Core\Scenes\CPUAnimatedGeometry.cpp" />
+    <ClCompile Include="src\Core\Scenes\InstancedGeometry.cpp" />
     <ClCompile Include="src\Core\Scenes\GPUAnimatedGeometry.cpp" />
     <ClCompile Include="src\Geometry\Mesh.cpp" />
     <ClCompile Include="src\Core\Scenes\ModernScene.cpp" />
@@ -36,6 +39,9 @@
     <ClCompile Include="src\Geometry\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\Scenes\InstancedGeometryGLSL.h" />
+    <ClInclude Include="src\Core\Scenes\CPUAnimatedGeometry.h" />
+    <ClInclude Include="src\Core\Scenes\InstancedGeometry.h" />
     <ClInclude Include="src\Core\Scenes\GPUAnimatedGeometry.h" />
     <ClInclude Include="src\Geometry\Mesh.h" />
     <ClInclude Include="src\Core\Scenes\ModernScene.h" />
