@@ -129,7 +129,18 @@
 					}
 
 				}
-				
+				// Lights
+
+				if (event.key.keysym.sym == SDLK_GREATER || event.key.keysym.sym == SDL_SCANCODE_KP_GREATER
+					|| event.key.keysym.sym == SDL_SCANCODE_KP_PERIOD || event.key.keysym.sym == SDLK_PERIOD)
+				{
+					if (event.type == SDL_KEYDOWN)
+					{
+						AddLight e;
+						EventManager::Get().ApplicationDispatcher.Post(e);
+					}
+				}
+
 				// subdivision
 				if (event.key.keysym.sym == SDLK_PLUS || 
 					event.key.keysym.sym == SDLK_EQUALS || 

@@ -54,9 +54,6 @@
     <ClCompile Include="src\Geometry\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Geometry\Vertex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Core\Scenes\GPUAnimatedGeometry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -188,11 +185,16 @@
     <ClInclude Include="src\Core\Scenes\InstancedGeometryGLSL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Event\Application\AddLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\Default.vert" />
     <None Include="src\Shaders\Default.frag" />
     <None Include="src\Shaders\Default.geom" />
     <None Include="src\Shaders\GPUAnimatedGeometry.vert" />
+    <None Include="src\Shaders\Instance.vert" />
+    <None Include="src\Shaders\Instance.geom" />
   </ItemGroup>
 </Project>

@@ -36,13 +36,13 @@
     <ClCompile Include="Src\Core\Application.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\Core\Window.cpp" />
-    <ClCompile Include="src\Geometry\Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Scenes\InstancedGeometryGLSL.h" />
     <ClInclude Include="src\Core\Scenes\CPUAnimatedGeometry.h" />
     <ClInclude Include="src\Core\Scenes\InstancedGeometry.h" />
     <ClInclude Include="src\Core\Scenes\GPUAnimatedGeometry.h" />
+    <ClInclude Include="src\Event\Application\AddLight.h" />
     <ClInclude Include="src\Geometry\Mesh.h" />
     <ClInclude Include="src\Core\Scenes\ModernScene.h" />
     <ClInclude Include="src\Core\Scenes\Scene.h" />
@@ -84,6 +84,8 @@
     <None Include="src\Shaders\Default.geom" />
     <None Include="src\Shaders\Default.vert" />
     <None Include="src\Shaders\GPUAnimatedGeometry.vert" />
+    <None Include="src\Shaders\Instance.geom" />
+    <None Include="src\Shaders\Instance.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

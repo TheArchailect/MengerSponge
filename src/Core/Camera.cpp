@@ -4,16 +4,16 @@
 
 Camera::Camera(int width, int height)
 {
-	Pitch = -25;
-	Yaw = -90;
+	m_Pitch = -25;
+	m_Yaw = -90;
 	m_CameraSpeed = 8.0f;
-	Aspect = (float)width / (float)height;
+	m_Aspect = (float)width / (float)height;
 	FOV = 65.0f;
 	m_Forward = glm::vec3(0.0f, 0.0f, -1.0f); // gets recalculated immidiately 
 	m_Position = glm::vec3(0.0f, 15.0f, 35.0f);
 	m_Up = glm::vec3(0.0f, 1.0f, 0.0f);
-	View = glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
-	Projection = glm::perspective(glm::radians(FOV), Aspect, 0.1f, 1000.0f);
+	m_View = glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
+	m_Projection = glm::perspective(glm::radians(FOV), m_Aspect, 0.1f, 1000.0f);
 	RegisterCallbacks();
 }
 
@@ -36,9 +36,9 @@ void Camera::Update(const Event<CameraEvent>& e)
 {
 	float DeltaTime = Application::Get().GetUtils().m_DeltaTime;
 
-	m_Forward.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-	m_Forward.y = sin(glm::radians(Pitch));
-	m_Forward.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+	m_Forward.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+	m_Forward.y = sin(glm::radians(m_Pitch));
+	m_Forward.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
 	m_Forward = glm::normalize(m_Forward);
 	// update the translation
 	if (m_State.forward) m_Position += (m_CameraSpeed * m_Forward) * DeltaTime;
@@ -51,8 +51,8 @@ void Camera::Update(const Event<CameraEvent>& e)
 
 void Camera::ViewPortResize(const Event<CameraEvent>& e)
 {
-	Aspect = (float)e.windowWidth / (float)e.windowHeight;
-	Projection = glm::perspective(glm::radians(FOV), Aspect, 0.1f, 1000.0f);
+	m_Aspect = (float)e.windowWidth / (float)e.windowHeight;
+	m_Projection = glm::perspective(glm::radians(FOV), m_Aspect, 0.1f, 1000.0f);
 }
 
 glm::mat4 Camera::GetView() const
@@ -62,52 +62,51 @@ glm::mat4 Camera::GetView() const
 
 glm::mat4 Camera::GetProjection() const
 {
-	return Projection;
+	return m_Projection;
 }
 
-glm::quat Camera::ToQuaternion(float yaw, float pitch, float roll)
+glm::vec3 Camera::GetPostition() const
 {
-	float cy = cos(yaw * 0.5);
-	float sy = sin(yaw * 0.5);
-	float cp = cos(pitch * 0.5);
-	float sp = sin(pitch * 0.5);
-	float cr = cos(roll * 0.5);
-	float sr = sin(roll * 0.5);
+	return m_Position;
+}
 
-	glm::quat q;
-	q.w = cr * cp * cy + sr * sp * sy;
-	q.x = sr * cp * cy - cr * sp * sy;
-	q.y = cr * sp * cy + sr * cp * sy;
-	q.z = cr * cp * sy - sr * sp * cy;
+glm::vec3 Camera::GetForward() const
+{
+	return m_Forward;
+}
 
-	return q;
+void Camera::Reset(glm::vec3 pos, float y, float p)
+{
+	m_Position = pos;
+	m_Pitch = p;
+	m_Yaw = y;
 }
 
 void Camera::Rotate(const Event<CameraEvent>& e)
 {
 	
-	Yaw += (e.m_CameraRotation.yaw * m_CameraSpeed) * Application::Get().GetUtils().m_DeltaTime;
+	m_Yaw += (e.m_CameraRotation.yaw * m_CameraSpeed) * Application::Get().GetUtils().m_DeltaTime;
 
-	if (Yaw > 360.0f)
+	if (m_Yaw > 360.0f)
 	{
-		Yaw = 0;
+		m_Yaw = 0;
 	}
-	else if (Yaw < -360)
+	else if (m_Yaw < -360)
 	{
-		Yaw += 360.0f;
+		m_Yaw += 360.0f;
 	}
 
-	if (Pitch > 87.0f)
+	if (m_Pitch > 87.0f)
 	{
-		Pitch = 87.0f;
+		m_Pitch = 87.0f;
 	}
-	else if (Pitch < -87.0f)
+	else if (m_Pitch < -87.0f)
 	{
-		Pitch = -87.0f;
+		m_Pitch = -87.0f;
 	}
 	else
 	{
-		Pitch += (e.m_CameraRotation.pitch * m_CameraSpeed) * Application::Get().GetUtils().m_DeltaTime;
+		m_Pitch += (e.m_CameraRotation.pitch * m_CameraSpeed) * Application::Get().GetUtils().m_DeltaTime;
 	}
 }
 

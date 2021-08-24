@@ -25,6 +25,8 @@ public:
 
 private:
 	void Init(const WindowData& properties);
+
+private:
 	SDL_Window* m_Window;
 	SDL_GLContext m_Context;
 	SDL_Renderer* m_Renderer;

@@ -15,7 +15,7 @@ public:
 
 private:
 	void RegisterCallbacks() override;
-	void Update(glm::mat4 ModelTransform) override;
+	void Update() override;
 
 private:
 	ShaderProgram* m_Shader;

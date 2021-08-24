@@ -7,7 +7,7 @@ out vec3 Position;
 flat out int MaterialIndex;
 uniform mat4 Projection;
 uniform mat4 View;
-uniform mat4 Model;
+in mat4 Models[];
 
 int MaterialSelect(vec3 v)
 {
@@ -24,9 +24,9 @@ void main()
     int m = MaterialSelect(n);
 
     for (int i = 0; i < 3; i++) {
-        gl_Position = Projection * View * Model * gl_in[i].gl_Position; 
-        Position = (Model * gl_in[i].gl_Position).xyz;
-        Normal = mat3(transpose(inverse(Model))) * n;
+        gl_Position = Projection * View * Models[0] * gl_in[i].gl_Position; 
+        Position = (gl_in[i].gl_Position).xyz;
+        Normal = mat3(transpose(inverse(Models[0]))) * n;
         MaterialIndex = m;
         EmitVertex();
     }

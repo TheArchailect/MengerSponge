@@ -77,9 +77,9 @@ void MengerSponge::UpdateOverlay()
     );
     m_Overlay->m_OverlayData->GeometrySize = m_Scenes.at(SceneNumber)->GeometrySize();
     m_Overlay->m_OverlayData->LOD = m_Scenes.at(SceneNumber)->CurrentSubdivision + 1;
-    m_Overlay->m_OverlayData->BackFaceCulling = super::BackFaceCulling;
-    m_Overlay->m_OverlayData->DepthBuffering = super::DepthTesting;
-    m_Overlay->m_OverlayData->LightCount = 1; 
+    m_Overlay->m_OverlayData->BackFaceCulling = super::b_BackFaceCulling;
+    m_Overlay->m_OverlayData->DepthBuffering = super::b_DepthTesting;
+    m_Overlay->m_OverlayData->LightCount = m_Scenes.at(SceneNumber)->m_LightCount; 
     m_Overlay->m_OverlayData->SceneNumber = SceneNumber + 1;
     m_Overlay->m_OverlayData->RefreshRate = current.refresh_rate;
     m_Overlay->m_OverlayData->TriCount = m_Scenes.at(SceneNumber)->TriangleCount();
@@ -102,44 +102,36 @@ void MengerSponge::Init()
 {
     super::Init();
     m_Scenes.resize(6);
-    // scene 1
     m_Scenes.at(SCENE_NUMBER::S_ONE) = new FixedFunctionScene
     (
         super::GetWindow().GetWidth(), 
         super::GetWindow().GetHeight()
     );
-    // scene 2
     m_Scenes.at(SCENE_NUMBER::S_TWO) = new ModernScene
     (
         super::GetWindow().GetWidth(),
         super::GetWindow().GetHeight()
     );
-    // scene 3
     m_Scenes.at(SCENE_NUMBER::S_THREE) = new InstancedGeometry
     (
         super::GetWindow().GetWidth(),
         super::GetWindow().GetHeight()
     );
-    // scene 3
     m_Scenes.at(SCENE_NUMBER::S_FOUR) = new InstancedGeometryGLSL
     (
         super::GetWindow().GetWidth(),
         super::GetWindow().GetHeight()
     );
-    // scene 5
     m_Scenes.at(SCENE_NUMBER::S_FIVE) = new CPUAnimatedGeometry
     (
         super::GetWindow().GetWidth(),
         super::GetWindow().GetHeight()
     );
-    // scene 6
     m_Scenes.at(SCENE_NUMBER::S_SIX) = new GPUAnimatedGeometry
     (
         super::GetWindow().GetWidth(),
         super::GetWindow().GetHeight()
     );
-
-    // begin
     m_Scenes.at(SceneNumber)->Begin();
 }
 

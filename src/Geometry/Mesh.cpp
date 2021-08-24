@@ -150,9 +150,7 @@ void Mesh::DrawLegacy()
 
 void Mesh::DrawInstanced()
 {
-    //
     glBindVertexArray(VAO);
-    //glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
     glDrawElementsInstanced(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, (void*)0, 9);
 }
 
@@ -165,9 +163,14 @@ void Mesh::Update()
     m_Transform = glm::rotate(m_Transform, m_Rotation.z, glm::vec3(0, 0, 1));
 }
 
-glm::mat4 Mesh::GetTransform()
+glm::mat4 Mesh::GetTransform() const
 {
 	return m_Transform;
+}
+
+int Mesh::GetElementCount()
+{
+    return m_Indices.size();
 }
 
 glm::vec3 Mesh::CalcNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3)

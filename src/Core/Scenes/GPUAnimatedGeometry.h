@@ -13,13 +13,11 @@ public:
 
 private:
 	void RegisterCallbacks() override;
-	void Update(glm::mat4 ModelTransform) override;
+	void Update() override;
 	glm::vec3 SphereCast(glm::vec3 origin, glm::vec3 point, float radius);
 	float Map(float value, float min1, float max1, float min2, float max2);
 
 private:
 	ShaderProgram* m_Shader;
-	Mesh* m_Axis;
-	float EaseOut(float t);
 };
 

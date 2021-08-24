@@ -25,11 +25,9 @@ public:
 	void Update(const Event<CameraEvent>& e);
 	glm::mat4 GetView() const;
 	glm::mat4 GetProjection() const;
-	glm::quat ToQuaternion(float yaw, float pitch, float roll);
-	float Yaw;
-	float Pitch;
-	glm::vec3 m_Position;
-	glm::vec3 m_Forward;
+	glm::vec3 GetPostition() const;
+	glm::vec3 GetForward() const;
+	void Reset(glm::vec3 pos, float y, float p);
 
 private:
 	void Rotate(const Event<CameraEvent>& e);
@@ -41,13 +39,17 @@ private:
 	void Down(const Event<CameraEvent>& e);
 
 private:
-	glm::mat4 Projection;
-	glm::mat4 View;
+	glm::mat4 m_Projection;
+	glm::mat4 m_View;
 	glm::vec3 m_Up;
 	float FOV;
-	float Aspect;
+	float m_Aspect;
 	float m_CameraSpeed;
 	CAMERA_STATE m_State;
+	float m_Yaw;
+	float m_Pitch;
+	glm::vec3 m_Position;
+	glm::vec3 m_Forward;
 
 };
 

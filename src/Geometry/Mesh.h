@@ -1,5 +1,4 @@
 #pragma once
-#include <glm/glm.hpp>
 #include "../Core/include.h"
 #include "Vertex.h"
 
@@ -16,13 +15,12 @@ public:
 	void DrawLegacy();
 	void DrawInstanced();
 	void Update();
-	glm::mat4 GetTransform();
-
-public:
-	std::vector<Vertex>			m_Verts;
-	std::vector<unsigned int>	m_Indices;
+	glm::mat4 GetTransform() const;
+	int GetElementCount();
 
 private:
+	std::vector<Vertex>			m_Verts;
+	std::vector<unsigned int>	m_Indices;
 	glm::vec3					m_Position;
 	glm::vec3					m_Rotation;
 	glm::mat4					m_Transform;

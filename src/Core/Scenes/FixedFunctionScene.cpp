@@ -8,10 +8,11 @@ FixedFunctionScene::FixedFunctionScene(int width, int height) : Scene(width, hei
 
 void FixedFunctionScene::Begin()
 {   
-    Update(glm::mat4(0));
+    Update();
     super::b_IsActive = true;
     super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
     m_VAO = new Mesh(m_Sponge, m_Indices);
+    m_Camera->Reset(glm::vec3(0, 5, 40), -90, 0);
 }
 
 void FixedFunctionScene::End()
@@ -59,7 +60,7 @@ void FixedFunctionScene::GeometryGenerate(const Event<ApplicationEvent>& e)
     if (super::b_IsActive)
     {
         super::CurrentSubdivision += e.division;
-        super::IndexOffset = 0; // TO DO unused in IM
+        super::IndexOffset = 0;
         m_Sponge.clear();
         m_Indices.clear();
         super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
@@ -81,7 +82,7 @@ void FixedFunctionScene::RegisterCallbacks()
     );
 }
 
-void FixedFunctionScene::Update(glm::mat4 ModelTransform)
+void FixedFunctionScene::Update()
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -104,11 +105,12 @@ void FixedFunctionScene::Lighting()
     GLfloat ambient[] = { 0.1, 0.1, 0.1, 1.0 };
     GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
     GLfloat specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    glm::vec3 cp = m_Camera->GetPostition();
     GLfloat position[] = 
     { 
-        super::m_Camera->m_Position.x, 
-        super::m_Camera->m_Position.y, 
-        super::m_Camera->m_Position.z, 1.0 
+        cp.x, 
+        cp.y, 
+        cp.z, 1.0 
     };
     GLfloat lmodel_ambient[] = { 0.4, 0.4, 0.4, 1.0 };
     GLfloat local_view[] = { 1.0 };

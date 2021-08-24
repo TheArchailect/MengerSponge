@@ -14,6 +14,9 @@ public:
 
 private:
 	virtual void Tick() = 0;
+	void RegisterCallbacks();
+	void ToggleLighting(const Event<ApplicationEvent>& e);
+	void ToggleBackfaceCulling(const Event<ApplicationEvent>& e);
 
 protected:
 	void Clear();
@@ -31,9 +34,9 @@ protected:
 	Input* m_Input;
 	EventManager* m_EventManager;
 	bool b_IsRunning;
-	bool BackFaceCulling;
-	bool DepthTesting;
-	bool Lighting;
+	bool b_BackFaceCulling;
+	bool b_DepthTesting;
+	bool b_Lighting;
 
 private:
 	static EngineUtils* m_Utils;

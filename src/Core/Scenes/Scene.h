@@ -4,6 +4,23 @@
 #include "../Camera.h"
 #include "../../Geometry/Mesh.h"
 
+#define MATERIALS 3
+
+class DirectionalLight {
+public:
+	DirectionalLight(glm::vec3 p, glm::vec3 a, glm::vec3 d, glm::vec3 s)
+	{
+		Lp = p;
+		La = a;
+		Ld = d;
+		Ls = s;
+	}
+	glm::vec3 Lp;
+	glm::vec3 La;
+	glm::vec3 Ld;
+	glm::vec3 Ls;
+};
+
 class Material {
 public:
 	Material(float a[], float d[], float s[], float shininess)
@@ -47,21 +64,23 @@ class Scene
 {
 public: 
 	Scene(int width, int height);
-
+	int m_LightCount;
 public:
 	virtual void Begin() = 0;
 	virtual void End() = 0;
 	virtual void Render() = 0;
 
 private:
-	virtual void RegisterCallbacks() = 0;
-	virtual void Update(glm::mat4 ModelTransform) = 0;
+	virtual void RegisterCallbacks();
+	virtual void Update() = 0;
+	void GenerateLight(const Event<ApplicationEvent>& e);
+	float RandomFloat(float min, float max);
 
 protected:
 	virtual void GeometryGenerate(const Event<ApplicationEvent>& e) = 0;
 
 public:
-	unsigned long long GeometrySize();
+	unsigned long GeometrySize();
 	int TriangleCount();
 	uint32_t CurrentSubdivision;
 	uint32_t MengerSize;
@@ -81,5 +100,7 @@ protected:
 	bool b_IsActive;
 	std::vector<PointLight*> m_Lights;
 	std::vector<Material*> m_Mats;
+	DirectionalLight* m_DirectionLight;
+
 };
 
