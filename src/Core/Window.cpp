@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "Application.h"
+#include "Application/Application.h"
 std::unique_ptr<Window> Window::Create(const WindowData& properties, bool FullScreen)
 {
 	return std::unique_ptr<Window>(new Window(properties, FullScreen));

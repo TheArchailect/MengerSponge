@@ -1,5 +1,4 @@
 #include "Mesh.h"
-
 Mesh::Mesh(std::vector<Vertex> v, std::vector<unsigned int> i)
 {
     this->m_Verts = v;
@@ -15,6 +14,14 @@ Mesh::Mesh(std::vector<Vertex> v, std::vector<unsigned int> i)
         glm::radians(0.0f),
         glm::vec3(0.0f, 1.0f, 0.0f)
     );
+}
+
+int Mesh::SelectMaterial(glm::vec3 n)
+{
+
+    if (abs(n.x) > abs(n.y) && abs(n.x) > abs(n.z)) return 0;
+    if (abs(n.y) > abs(n.x) && abs(n.y) > abs(n.z)) return 1;
+    if (abs(n.z) > abs(n.y) && abs(n.z) > abs(n.x)) return 2;
 }
 
 void Mesh::SetupMesh()
@@ -50,7 +57,7 @@ void Mesh::Draw(GLenum ShaderPrimitive)
     glDrawElements(ShaderPrimitive, m_Indices.size(), GL_UNSIGNED_INT, 0);
 }
 
-void Mesh::DrawLegacy()
+void Mesh::DrawLegacy(std::vector<Material*> mats)
 {
     glPushMatrix();
     glBegin(GL_TRIANGLES);
@@ -62,6 +69,7 @@ void Mesh::DrawLegacy()
             m_Verts.at(m_Indices.at(i - 1)).Position,
             m_Verts.at(m_Indices.at(i )).Position
         );
+        SetMaterial(*mats.at(SelectMaterial(n)));
         glNormal3f
         (
             n.x,
@@ -136,7 +144,6 @@ void Mesh::DrawLegacy()
             m_Verts.at(m_Indices.at(i - 3)).Position.y,
             m_Verts.at(m_Indices.at(i - 3)).Position.z
         );
-        // face normal
         glNormal3f
         (
             n.x, 
@@ -148,10 +155,10 @@ void Mesh::DrawLegacy()
     glPopMatrix();
 }
 
-void Mesh::DrawInstanced()
+void Mesh::DrawInstanced(int n)
 {
     glBindVertexArray(VAO);
-    glDrawElementsInstanced(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, (void*)0, 9);
+    glDrawElementsInstanced(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, (void*)0, n);
 }
 
 void Mesh::Update()
@@ -161,6 +168,14 @@ void Mesh::Update()
     m_Transform = glm::rotate(m_Transform, m_Rotation.x, glm::vec3(1, 0, 0));
     m_Transform = glm::rotate(m_Transform, m_Rotation.y, glm::vec3(0, 1, 0));
     m_Transform = glm::rotate(m_Transform, m_Rotation.z, glm::vec3(0, 0, 1));
+}
+
+void Mesh::SetMaterial(const Material& m)
+{
+    glMaterialfv(GL_FRONT, GL_AMBIENT, m.Ka);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, m.Kd);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, m.Ks);
+    glMaterialfv(GL_FRONT, GL_SHININESS, m.n);
 }
 
 glm::mat4 Mesh::GetTransform() const

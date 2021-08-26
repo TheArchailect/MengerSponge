@@ -22,6 +22,7 @@ Application::Application(uint32_t width, uint32_t height)
     b_BackFaceCulling = true;
     b_DepthTesting = true;
     b_Lighting = true;
+    RegisterCallbacks();
 }
 
 void Application::Init()
@@ -68,26 +69,59 @@ void Application::RegisterCallbacks()
             std::placeholders::_1
         )
     );
+    EventManager::Get().ApplicationDispatcher.Subscribe
+    (
+        ApplicationEvent::TOGGLE_DEPTHBUFFER,
+        std::bind
+        (
+            &Application::ToggleDepthBuffer,
+            this,
+            std::placeholders::_1
+        )
+    );
 }
 
 void Application::ToggleLighting(const Event<ApplicationEvent>& e)
 {
+    SDL_LogInfo(SDL_LOG_CATEGORY_CUSTOM, "%s", e.GetName().c_str());
     if (b_Lighting)
     {
         b_Lighting = false;
     }
+    else b_Lighting = true;
 }
 
 void Application::ToggleBackfaceCulling(const Event<ApplicationEvent>& e)
 {
+    SDL_LogInfo(SDL_LOG_CATEGORY_CUSTOM, "%s", e.GetName().c_str());
     if (b_BackFaceCulling)
     {
         b_BackFaceCulling = false;
+        glDisable(GL_CULL_FACE);
+    }
+    else {
+        b_BackFaceCulling = true;
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+    }
+}
+
+void Application::ToggleDepthBuffer(const Event<ApplicationEvent>& e)
+{
+    SDL_LogInfo(SDL_LOG_CATEGORY_CUSTOM, "%s", e.GetName().c_str());
+    if (b_DepthTesting)
+    {
+        b_DepthTesting = false;
+        glDisable(GL_DEPTH_TEST);
+    }
+    else {
+        b_DepthTesting = true;
+        glEnable(GL_DEPTH_TEST);
     }
 }
 
 void Application::Clear()
 {
-    glClearColor(0.1, 0.1, 0.1, 1.0);
+    glClearColor(0.3, 0.3, 0.3, 0.1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

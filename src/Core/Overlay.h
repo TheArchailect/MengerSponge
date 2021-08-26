@@ -1,5 +1,5 @@
 #pragma once
-#include "../Core/include.h"
+#include "Core/include.h"
 #define GLT_IMPLEMENTATION
 #include <gltext/gltext.h>
 
@@ -16,6 +16,7 @@ public:
 		SceneNumber = 0;					// TO DO
 		LOD = 1;							// TO DO 
 		GeometrySize = 9;					// TO DO
+		Lighting = true;
 	}
 
 public:
@@ -23,11 +24,13 @@ public:
 	int LightCount;
 	bool DepthBuffering;
 	bool BackFaceCulling;
+	bool Lighting;
 	glm::vec2 Resolution;
 	int RefreshRate;
 	int SceneNumber;
 	int LOD;
 	unsigned long long GeometrySize;
+	int VertCount;
 
 };
 

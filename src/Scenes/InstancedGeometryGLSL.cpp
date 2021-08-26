@@ -1,5 +1,5 @@
 #include "InstancedGeometryGLSL.h"
-#include "../Application.h"
+
 InstancedGeometryGLSL::InstancedGeometryGLSL(int width, int height) : Scene(width, height)
 {
 	b_IsActive = false;
@@ -17,7 +17,8 @@ void InstancedGeometryGLSL::Begin()
 {
 	super::b_IsActive = true;
 	super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
-	m_VAO = new Mesh(m_Sponge, m_Indices);
+	//m_VAO = new Mesh(m_Sponge, m_Indices);
+	m_IVAO = new InstancedMesh(m_Sponge, m_Indices);
 	m_Camera->Reset(glm::vec3(0, 40, 80), -90, -25);
 }
 
@@ -28,14 +29,15 @@ void InstancedGeometryGLSL::End()
 	m_Sponge.clear();
 	m_Indices.clear();
 	glUseProgram(0);
-	delete m_VAO;
+	//delete m_VAO;
+	delete m_IVAO;
 }
 
 void InstancedGeometryGLSL::Render()
 {
 	glUseProgram(m_Shader->GetShaderProgramID());
 	Update();
-	m_VAO->DrawInstanced();
+	m_IVAO->DrawInstanced();
 	Application::Get().GetWindow().Update();
 }
 
@@ -48,8 +50,14 @@ void InstancedGeometryGLSL::GeometryGenerate(const Event<ApplicationEvent>& e)
 		m_Sponge.clear();
 		m_Indices.clear();
 		super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
-		m_VAO = new Mesh(m_Sponge, m_Indices);
+		//m_VAO = new Mesh(m_Sponge, m_Indices);
+		m_IVAO = new InstancedMesh(m_Sponge, m_Indices);
 	}
+}
+
+int InstancedGeometryGLSL::TriangleCount()
+{
+	return m_IVAO->GetElementCount() / 3;
 }
 
 void InstancedGeometryGLSL::RegisterCallbacks()
@@ -68,30 +76,36 @@ void InstancedGeometryGLSL::RegisterCallbacks()
 
 void InstancedGeometryGLSL::Update()
 {
+	// mesh
+	m_IVAO->Update();
 	// matricies
 	SetMat4(m_Shader->GetShaderProgramID(), "View", m_Camera->GetView());
 	SetMat4(m_Shader->GetShaderProgramID(), "Projection", m_Camera->GetProjection());
 	// camera
 	SetVec3(m_Shader->GetShaderProgramID(), "Camera", m_Camera->GetPostition());
 	// lighting directional
-	m_DirectionLight->Lp = m_Camera->GetForward();
-	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Direction", m_DirectionLight->Lp);
+	//m_DirectionLight->Lp = m_Camera->GetForward();
+	//SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Direction", m_DirectionLight->Lp);
 	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Ambient", m_DirectionLight->La);
 	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Diffuse", m_DirectionLight->Ld);
 	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Specular", m_DirectionLight->Ls);
 	// lighting point
-	SetInt(m_Shader->GetShaderProgramID(), "LightCount", m_LightCount);
-	for (int i = 0; i < m_LightCount; ++i)
+	if (Application::Get().b_Lighting)
 	{
-		std::string idx = std::to_string(i);
-		SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Position").c_str(), super::m_Lights.at(i)->Position);
-		SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Ambient").c_str(), super::m_Lights.at(i)->Ambient);
-		SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Diffuse").c_str(), super::m_Lights.at(i)->Diffuse);
-		SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Specular").c_str(), super::m_Lights.at(i)->Specular);
-		SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Constant").c_str(), super::m_Lights.at(i)->Constant);
-		SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Linear").c_str(), super::m_Lights.at(i)->Linear);
-		SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Quadratic").c_str(), super::m_Lights.at(i)->Quadratic);
+		SetInt(m_Shader->GetShaderProgramID(), "LightCount", m_LightCount);
+		for (int i = 0; i < m_LightCount; ++i)
+		{
+			std::string idx = std::to_string(i);
+			SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Position").c_str(), super::m_Lights.at(i)->Position);
+			SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Ambient").c_str(), super::m_Lights.at(i)->Ambient);
+			SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Diffuse").c_str(), super::m_Lights.at(i)->Diffuse);
+			SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Specular").c_str(), super::m_Lights.at(i)->Specular);
+			SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Constant").c_str(), super::m_Lights.at(i)->Constant);
+			SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Linear").c_str(), super::m_Lights.at(i)->Linear);
+			SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Quadratic").c_str(), super::m_Lights.at(i)->Quadratic);
+		}
 	}
+	else SetInt(m_Shader->GetShaderProgramID(), "LightCount", -1);
 	// materials
 	for (int i = 0; i < MATERIALS; ++i)
 	{
@@ -100,37 +114,6 @@ void InstancedGeometryGLSL::Update()
 		SetVec3(m_Shader->GetShaderProgramID(), "u_Material[" + idx + "].Diffuse", glm::vec3(super::m_Mats.at(i)->Kd[0], super::m_Mats.at(i)->Kd[1], super::m_Mats.at(i)->Kd[2]));
 		SetVec3(m_Shader->GetShaderProgramID(), "u_Material[" + idx + "].Specular", glm::vec3(super::m_Mats.at(i)->Ks[0], super::m_Mats.at(i)->Ks[1], super::m_Mats.at(i)->Ks[2]));
 		SetFloat(m_Shader->GetShaderProgramID(), "u_Material[" + idx + "].Shininess", m_Mats.at(i)->n[0]);
-	}
-	// instancing 
-	glm::vec3 rot[9]; 
-	for (int x = 0; x < 3; ++x)
-	{
-		for (int y = 0; y < 3; ++y)
-		{
-			rot[x + y] = glm::vec3(x, y, 1);
-		}
-	}
-	int z = 0;
-	int idx = 0;
-	int offset = 35;
-	for (int x = -1; x < 2; ++x)
-	{
-		for (int y = -1; y < 2; ++y)
-		{
-			std::string s = "M[" + std::to_string(idx) + "]";
-			SetMat4
-			(
-				m_Shader->GetShaderProgramID(),
-				s,
-				glm::rotate
-				(
-					glm::translate(m_VAO->GetTransform(), glm::vec3(x * offset, y * offset, 0)),
-					glm::radians((SDL_GetTicks() / 100.0f)),
-					rot[idx]
-				)
-			);
-			idx++;
-		}
 	}
 }
 

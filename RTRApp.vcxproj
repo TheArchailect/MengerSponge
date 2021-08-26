@@ -19,39 +19,50 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Core\Scenes\InstancedGeometryGLSL.cpp" />
-    <ClCompile Include="src\Core\Scenes\CPUAnimatedGeometry.cpp" />
-    <ClCompile Include="src\Core\Scenes\InstancedGeometry.cpp" />
-    <ClCompile Include="src\Core\Scenes\GPUAnimatedGeometry.cpp" />
-    <ClCompile Include="src\Geometry\Mesh.cpp" />
-    <ClCompile Include="src\Core\Scenes\ModernScene.cpp" />
-    <ClCompile Include="src\Core\Scenes\Scene.cpp" />
+    <ClCompile Include="src\Application\Application.cpp" />
+    <ClCompile Include="src\Core\Components\Camera.cpp" />
+    <ClCompile Include="src\Core\Components\InstancedMesh.cpp" />
+    <ClCompile Include="src\Scenes\InstancedGeometryGLSL.cpp" />
+    <ClCompile Include="src\Scenes\CPUAnimatedGeometry.cpp" />
+    <ClCompile Include="src\Scenes\InstancedGeometry.cpp" />
+    <ClCompile Include="src\Scenes\GPUAnimatedGeometry.cpp" />
+    <ClCompile Include="src\Core\Components\Mesh.cpp" />
+    <ClCompile Include="src\Scenes\ModernScene.cpp" />
+    <ClCompile Include="src\Scenes\Scene.cpp" />
     <ClCompile Include="src\Core\Overlay.cpp" />
-    <ClCompile Include="src\Core\Scenes\FixedFunctionScene.cpp" />
+    <ClCompile Include="src\Scenes\FixedFunctionScene.cpp" />
     <ClCompile Include="src\Application\MengerSponge.cpp" />
-    <ClCompile Include="Src\Core\Camera.cpp" />
     <ClCompile Include="Src\Core\Input.cpp" />
     <ClCompile Include="Src\Event\EventManager.cpp" />
     <ClCompile Include="Include\glad\glad.c" />
-    <ClCompile Include="Src\Core\Application.cpp" />
     <ClCompile Include="Src\main.cpp" />
     <ClCompile Include="Src\Core\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\Scenes\InstancedGeometryGLSL.h" />
-    <ClInclude Include="src\Core\Scenes\CPUAnimatedGeometry.h" />
-    <ClInclude Include="src\Core\Scenes\InstancedGeometry.h" />
-    <ClInclude Include="src\Core\Scenes\GPUAnimatedGeometry.h" />
+    <ClInclude Include="src\Application\Application.h" />
+    <ClInclude Include="src\Core\Components\Camera.h" />
+    <ClInclude Include="src\Core\Components\Lighting.h" />
+    <ClInclude Include="src\Core\Components\Material.h" />
+    <ClInclude Include="src\Core\Material.h" />
+    <ClInclude Include="src\Utils\EngineUtilities.h" />
+    <ClInclude Include="src\Core\Components\InstancedMesh.h" />
+    <ClInclude Include="src\Scenes\InstancedGeometryGLSL.h" />
+    <ClInclude Include="src\Scenes\CPUAnimatedGeometry.h" />
+    <ClInclude Include="src\Scenes\InstancedGeometry.h" />
+    <ClInclude Include="src\Scenes\GPUAnimatedGeometry.h" />
     <ClInclude Include="src\Event\Application\AddLight.h" />
-    <ClInclude Include="src\Geometry\Mesh.h" />
-    <ClInclude Include="src\Core\Scenes\ModernScene.h" />
-    <ClInclude Include="src\Core\Scenes\Scene.h" />
+    <ClInclude Include="src\Event\Application\RemoveLight.h" />
+    <ClInclude Include="src\Event\Application\ToggleBackfaceCulling.h" />
+    <ClInclude Include="src\Event\Application\ToggleDepthBuffer.h" />
+    <ClInclude Include="src\Event\Application\ToggleLighting.h" />
+    <ClInclude Include="src\Core\Components\Mesh.h" />
+    <ClInclude Include="src\Scenes\ModernScene.h" />
+    <ClInclude Include="src\Scenes\Scene.h" />
     <ClInclude Include="src\Core\Overlay.h" />
     <ClInclude Include="src\Core\EngineUtilities.h" />
     <ClInclude Include="src\Core\include.h" />
-    <ClInclude Include="src\Core\Scenes\FixedFunctionScene.h" />
+    <ClInclude Include="src\Scenes\FixedFunctionScene.h" />
     <ClInclude Include="src\Application\MengerSponge.h" />
-    <ClInclude Include="Src\Core\Camera.h" />
     <ClInclude Include="Src\Core\Input.h" />
     <ClInclude Include="src\Event\Application\ApplicationEnd.h" />
     <ClInclude Include="Src\Event\Application\Generate.h" />
@@ -73,11 +84,12 @@
     <ClInclude Include="Src\Event\Window\WindowClosedEvent.h" />
     <ClInclude Include="Src\Event\Window\WindowEvent.h" />
     <ClInclude Include="Src\Event\Window\WindResizeEvent.h" />
-    <ClInclude Include="Src\Core\Application.h" />
     <ClInclude Include="Src\Core\Window.h" />
     <ClInclude Include="src\Shaders\Shader.h" />
     <ClInclude Include="src\Shaders\ShaderProgram.h" />
-    <ClInclude Include="src\Geometry\Vertex.h" />
+    <ClInclude Include="src\Types\Vertex.h" />
+    <ClInclude Include="src\Utils\GeometryUtilities.h" />
+    <ClInclude Include="src\Utils\Math.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\Shaders\Default.frag" />
@@ -160,7 +172,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)\build\$(Configuration) - $(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)\build\$(Configuration) - $(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\src</IncludePath>
     <LibraryPath>$(SolutionDir)\lib\$(PlatformTarget);$(LibraryPath)</LibraryPath>
     <TargetName>A1</TargetName>
   </PropertyGroup>
@@ -168,7 +180,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)\build\$(Configuration) - $(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)\build\$(Configuration) - $(PlatformTarget)\</IntDir>
-    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+    <IncludePath>$(SolutionDir)\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)\src</IncludePath>
     <LibraryPath>$(SolutionDir)\lib\$(PlatformTarget);$(LibraryPath)</LibraryPath>
     <TargetName>A1</TargetName>
   </PropertyGroup>

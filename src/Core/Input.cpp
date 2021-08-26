@@ -130,13 +130,47 @@
 
 				}
 				// Lights
-
-				if (event.key.keysym.sym == SDLK_GREATER || event.key.keysym.sym == SDL_SCANCODE_KP_GREATER
-					|| event.key.keysym.sym == SDL_SCANCODE_KP_PERIOD || event.key.keysym.sym == SDLK_PERIOD)
+				if (event.key.keysym.sym == SDLK_PERIOD)
 				{
+					
 					if (event.type == SDL_KEYDOWN)
 					{
 						AddLight e;
+						EventManager::Get().ApplicationDispatcher.Post(e);
+					}
+				}
+
+				if (event.key.keysym.sym == SDLK_COMMA)
+				{
+					if (event.type == SDL_KEYDOWN)
+					{
+						RemoveLight e;
+						EventManager::Get().ApplicationDispatcher.Post(e);
+					}
+				}
+				
+				// application settings 
+				if (event.key.keysym.sym == SDLK_c)
+				{
+					if (event.type == SDL_KEYDOWN)
+					{
+						ToggleBackfaceCulling e;
+						EventManager::Get().ApplicationDispatcher.Post(e);
+					}
+				}
+				if (event.key.keysym.sym == SDLK_l)
+				{
+					if (event.type == SDL_KEYDOWN)
+					{
+						ToggleLighting e;
+						EventManager::Get().ApplicationDispatcher.Post(e);
+					}
+				}
+				if (event.key.keysym.sym == SDLK_z)
+				{
+					if (event.type == SDL_KEYDOWN)
+					{
+						ToggleDepthBuffer e;
 						EventManager::Get().ApplicationDispatcher.Post(e);
 					}
 				}

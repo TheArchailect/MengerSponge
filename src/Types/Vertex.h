@@ -1,5 +1,5 @@
 #pragma once
-#include "../Core/include.h"
+#include "Core/include.h"
 class Vertex {
 public:
 	Vertex(glm::vec3 pos, glm::vec3 norm) : Position(pos), Normal(norm) {};

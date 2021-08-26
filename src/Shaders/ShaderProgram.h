@@ -1,5 +1,5 @@
 #pragma once
-#include "../Core/include.h"
+#include "Core/include.h"
 #include "Shader.h"
 class ShaderProgram {
 public:

@@ -1,6 +1,6 @@
 #pragma once
 #include "Event.h"
-#include "../Core/include.h"
+#include "Core/include.h"
 
 #include "Window/WindowEvent.h"
 #include "Window/WindowClosedEvent.h"
@@ -25,6 +25,10 @@
 #include "Application/ToggleProperties.h"
 #include "Application/SwitchScene.h"
 #include "Application/AddLight.h"
+#include "Application/RemoveLight.h"
+#include "Application/ToggleBackfaceCulling.h"
+#include "Application/ToggleLighting.h"
+#include "Application/ToggleDepthBuffer.h"
 
 class EventManager {
 public:

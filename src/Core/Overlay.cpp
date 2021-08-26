@@ -1,5 +1,5 @@
 #include "Overlay.h"
-#include "Application.h"
+#include "Application/Application.h"
 
 Overlay::Overlay()
 { 
@@ -75,6 +75,22 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
             );
         }
         {
+            std::string s;
+            if (m_OverlayData->Lighting) s = "On";
+            else s = "Off";
+            sprintf_s(str, "Lighting: %s", s.c_str());
+            gltSetText(field, str);
+            gltDrawText2DAligned
+            (
+                field,
+                0,
+                Application::Get().GetWindow().m_Data.Height - 5 * ZOffset,
+                1.0f,
+                GL_LEFT,
+                GLT_BOTTOM
+            );
+        }
+        {
             int x = m_OverlayData->Resolution.x;
             int y = m_OverlayData->Resolution.y;
             int ref = m_OverlayData->RefreshRate;
@@ -91,7 +107,7 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
             (
                 field,
                 0,
-                Application::Get().GetWindow().m_Data.Height - 5 * ZOffset,
+                Application::Get().GetWindow().m_Data.Height - 6 * ZOffset,
                 1.0f,
                 GL_LEFT,
                 GLT_BOTTOM
@@ -104,7 +120,7 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
             (
                 field,
                 0,
-                Application::Get().GetWindow().m_Data.Height - 6 * ZOffset,
+                Application::Get().GetWindow().m_Data.Height - 7 * ZOffset,
                 1.0f,
                 GL_LEFT,
                 GLT_BOTTOM
@@ -117,7 +133,7 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
             (
                 field,
                 0,
-                Application::Get().GetWindow().m_Data.Height - 7 * ZOffset,
+                Application::Get().GetWindow().m_Data.Height - 8 * ZOffset,
                 1.0f,
                 GL_LEFT,
                 GLT_BOTTOM
@@ -130,7 +146,20 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
             (
                 field,
                 0,
-                Application::Get().GetWindow().m_Data.Height - 8 * ZOffset,
+                Application::Get().GetWindow().m_Data.Height - 9 * ZOffset,
+                1.0f,
+                GL_LEFT,
+                GLT_BOTTOM
+            );
+        }
+        {
+            sprintf_s(str, "Vertex Count: %d", m_OverlayData->VertCount);
+            gltSetText(field, str);
+            gltDrawText2DAligned
+            (
+                field,
+                0,
+                Application::Get().GetWindow().m_Data.Height - 10 * ZOffset,
                 1.0f,
                 GL_LEFT,
                 GLT_BOTTOM

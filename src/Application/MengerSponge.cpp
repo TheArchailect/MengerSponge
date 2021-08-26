@@ -83,19 +83,32 @@ void MengerSponge::UpdateOverlay()
     m_Overlay->m_OverlayData->SceneNumber = SceneNumber + 1;
     m_Overlay->m_OverlayData->RefreshRate = current.refresh_rate;
     m_Overlay->m_OverlayData->TriCount = m_Scenes.at(SceneNumber)->TriangleCount();
+    m_Overlay->m_OverlayData->VertCount = m_Scenes.at(SceneNumber)->m_VertCount;
+    m_Overlay->m_OverlayData->Lighting = super::b_Lighting;
 }
 
 void MengerSponge::ToggleOverlayDisplay(const Event<ApplicationEvent>& e)
 {
+    SDL_LogInfo(SDL_LOG_CATEGORY_CUSTOM, "%s", e.GetName().c_str());
     if (OverlayState == OVERLAY_STATE::S_FPS_ONLY) OverlayState = OVERLAY_STATE::S_FULL_HUD;
     else OverlayState = OVERLAY_STATE::S_FPS_ONLY;
 }
 
 void MengerSponge::ChangeScene(const Event<ApplicationEvent>& e)
 {
+    SDL_LogInfo(SDL_LOG_CATEGORY_CUSTOM, "%s", e.GetName().c_str());
     m_Scenes.at(SceneNumber)->End();
     SceneNumber = e.SceneNumber;
     m_Scenes.at(SceneNumber)->Begin();
+}
+
+void MengerSponge::End(const Event<ApplicationEvent>& e)
+{
+    SDL_LogInfo(SDL_LOG_CATEGORY_CUSTOM, "%s", e.GetName().c_str());
+    super::b_IsRunning = false;
+    super::End(e);
+    m_Scenes.clear();
+    delete m_Overlay;
 }
 
 void MengerSponge::Init()
@@ -141,12 +154,4 @@ void MengerSponge::Run()
     {
         Tick();
     }
-}
-
-void MengerSponge::End(const Event<ApplicationEvent>& e)
-{
-    super::b_IsRunning = false;
-    super::End(e);
-    m_Scenes.clear();
-    delete m_Overlay;
 }

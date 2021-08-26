@@ -1,14 +1,14 @@
 #pragma once
-#include "../Core/Application.h"
-#include "../Core/Scenes/Scene.h"
-#include "../Core/Scenes/ModernScene.h"
-#include "../Core/Scenes/FixedFunctionScene.h"
-#include "../Core/Scenes/GPUAnimatedGeometry.h"
-#include "../Core/Scenes/CPUAnimatedGeometry.h"
-#include "../Core/Scenes/InstancedGeometry.h"
-#include "../Core/Scenes/InstancedGeometryGLSL.h"
-#include "../Core/Overlay.h"
-#include "../Core/include.h"
+#include "Application.h"
+#include "Scenes/Scene.h"
+#include "Scenes/ModernScene.h"
+#include "Scenes/FixedFunctionScene.h"
+#include "Scenes/GPUAnimatedGeometry.h"
+#include "Scenes/CPUAnimatedGeometry.h"
+#include "Scenes/InstancedGeometry.h"
+#include "Scenes/InstancedGeometryGLSL.h"
+#include "Core/Overlay.h"
+#include "Core/include.h"
 
 class MengerSponge : public Application
 {

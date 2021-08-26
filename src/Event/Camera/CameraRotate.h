@@ -1,12 +1,12 @@
 #pragma once
-#include "../EventManager.h"
+#include "Event/EventManager.h"
 
-    class CameraRotate : public Event<CameraEvent>
-    {
-    public:
-        CameraRotate(CAMERA_ROTATION rotation)
-            : Event<CameraEvent>(CameraEvent::CAMERA_ROTATION, rotation, "camera rotate") {}
-        virtual ~CameraRotate() = default;
-    public:
-    };
+class CameraRotate : public Event<CameraEvent>
+{
+public:
+    CameraRotate(CAMERA_ROTATION rotation)
+    : Event<CameraEvent>(CameraEvent::CAMERA_ROTATION, rotation, "camera rotate") {}
+    virtual ~CameraRotate() = default;
+public:
+};
 

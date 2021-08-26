@@ -1,5 +1,5 @@
 #include "FixedFunctionScene.h"
-#include "../Application.h"
+#include "Application/Application.h"
 
 FixedFunctionScene::FixedFunctionScene(int width, int height) : Scene(width, height)
 {
@@ -29,30 +29,23 @@ void FixedFunctionScene::End()
 void FixedFunctionScene::Render()
 {   
     glPushMatrix();
-    glm::mat4 v = m_Camera->GetView();
-    glMultMatrixf((GLfloat*)&v);
-    Lighting();
-    glPushMatrix();
-    SetMaterial(*super::m_Mats.at(0));
-    glm::mat4 m = m_VAO->GetTransform();
-    glMultMatrixf((GLfloat*)&m);
-    m_VAO->DrawLegacy();
-    glPopMatrix();
-
-    SetMaterial(*super::m_Mats.at(1));
-    int s = 60;
-    for (int x = -s; x < s; ++x)
     {
-        for (int z = -s; z < s; ++z)
-        {
-            glPushMatrix();
-            glTranslatef(x, 0, z);
-            m_Grid->DrawLegacy();
-            glPopMatrix();            
-        }
+        glm::mat4 v = m_Camera->GetView();
+        glMultMatrixf((GLfloat*)&v);
+        glPushMatrix();
+        glm::mat4 m = m_VAO->GetTransform();
+        glMultMatrixf((GLfloat*)&m);
+        Lighting();
+        m_VAO->DrawLegacy(super::m_Mats);
+        glPopMatrix();
     }
     glPopMatrix();
     Application::Get().GetWindow().Update();
+}
+
+int FixedFunctionScene::TriangleCount()
+{
+    return m_VAO->GetElementCount() / 3;
 }
 
 void FixedFunctionScene::GeometryGenerate(const Event<ApplicationEvent>& e)
@@ -92,35 +85,27 @@ void FixedFunctionScene::Update()
     glLoadIdentity();
 }
 
-void FixedFunctionScene::SetMaterial(const Material& m)
-{
-    glMaterialfv(GL_FRONT, GL_AMBIENT, m.Ka);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, m.Kd);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, m.Ks);
-    glMaterialfv(GL_FRONT, GL_SHININESS, m.n);
-}
-
 void FixedFunctionScene::Lighting()
 {
-    GLfloat ambient[] = { 0.1, 0.1, 0.1, 1.0 };
-    GLfloat diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat specular[] = { 1.0, 1.0, 1.0, 1.0 };
-    glm::vec3 cp = m_Camera->GetPostition();
-    GLfloat position[] = 
-    { 
-        cp.x, 
-        cp.y, 
-        cp.z, 1.0 
-    };
-    GLfloat lmodel_ambient[] = { 0.4, 0.4, 0.4, 1.0 };
-    GLfloat local_view[] = { 1.0 };
-
-    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse);
-    glLightfv(GL_LIGHT0, GL_POSITION, position);
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
-    glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local_view);
-
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    glPushMatrix();
+    for (int i = 0; i < 9; ++i) glDisable(GL_LIGHT0 + i);
+    if (Application::Get().b_Lighting && super::m_LightCount > 0)
+    {
+        {
+            glEnable(GL_LIGHTING);
+            GLfloat lmodel_ambient[] = { 0.4, 0.4, 0.4, 1.0 };
+            GLfloat local_view[] = { 1.0 };
+            glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
+            glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local_view);
+            for (int i = 0; i < super::m_LightCount && i < 9 && i < m_Lights.size(); ++i)
+            {
+                glLightfv(GL_LIGHT0 + i, GL_AMBIENT, &m_Lights.at(i)->Ambient[0]);
+                glLightfv(GL_LIGHT0 + i, GL_DIFFUSE, &m_Lights.at(i)->Diffuse[0]);
+                glLightfv(GL_LIGHT0 + i, GL_POSITION, &m_Lights.at(i)->Position[0]);
+                glEnable(GL_LIGHT0 + i);
+            }
+        }
+    }
+    else glDisable(GL_LIGHTING);
+    glPopMatrix();
 }

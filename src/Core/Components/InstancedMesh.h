@@ -1,21 +1,17 @@
 #pragma once
-#include "../Core/include.h"
-#include "Vertex.h"
-
-class Mesh
+#include "Core/Components/Material.h"
+#include "Types/Vertex.h"
+class InstancedMesh
 {
 public:
-	Mesh
+	InstancedMesh
 	(
-		std::vector<Vertex> v, 
+		std::vector<Vertex> v,
 		std::vector<unsigned int> i
 	);
-	virtual ~Mesh() {};
-	void Draw(GLenum ShaderPrimitive);
-	void DrawLegacy();
+	virtual ~InstancedMesh() {};
 	void DrawInstanced();
 	void Update();
-	glm::mat4 GetTransform() const;
 	int GetElementCount();
 
 private:
@@ -23,12 +19,14 @@ private:
 	std::vector<unsigned int>	m_Indices;
 	glm::vec3					m_Position;
 	glm::vec3					m_Rotation;
-	glm::mat4					m_Transform;
+	glm::mat4*					m_Transforms;
 	unsigned int				VAO;
 	unsigned int				VBO;
 	unsigned int				EBO;
-	void SetupMesh();
-	glm::vec3 CalcNormal(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3);
+	unsigned int				MBO;
+	uint32_t					m_Instances;
 
+private:
+	void SetupMesh();
 };
 

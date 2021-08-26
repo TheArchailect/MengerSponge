@@ -1,5 +1,5 @@
 #pragma once
-#include "../Core/include.h"
+#include "Core/include.h"
 struct CAMERA_ROTATION
 {
     float yaw = 0;
@@ -22,17 +22,18 @@ protected:
     T EventType;
     std::string EventName;
 public:
-    Event() = default;
-    Event(T type, const std::string& name = "") : EventType(type), EventName(name) {};
-    Event(T type, SCENE_NUMBER scene, const std::string& name = "") : EventType(type), EventName(name), SceneNumber(scene) {};
-    Event(T type, int d, const std::string& name = "") : EventType(type), EventName(name), division(d) {};
-    Event(T type, int w, int h, const std::string& name = "") : EventType(type), EventName(name), windowWidth(w), windowHeight(h) {};
-    Event(T type, CAMERA_ROTATION rotation, const std::string& name = "") : EventType(type), EventName(name), m_CameraRotation(rotation) {};
-    Event(T type, bool b_Update, const std::string& name = "") : EventType(type), EventName(name), b_CameraUpdate(b_Update) {};
+    Event(T type, const std::string& name)                                : EventType(type), EventName(name) {};
+    Event(T type, SCENE_NUMBER scene, const std::string& name)            : EventType(type), EventName(name), SceneNumber(scene) {};
+    Event(T type, int d, const std::string& name)                         : EventType(type), EventName(name), division(d) {};
+    Event(T type, int w, int h, const std::string& name)                  : EventType(type), EventName(name), windowWidth(w), windowHeight(h) {};
+    Event(T type, CAMERA_ROTATION rotation, const std::string& name)      : EventType(type), EventName(name), m_CameraRotation(rotation) {};
+    Event(T type, bool b_Update, const std::string& name)                 : EventType(type), EventName(name), b_CameraUpdate(b_Update) {};
+
 public:
     inline const T Type() const { return EventType; };
     inline const std::string& GetName() const { return EventName; };
     virtual bool IsHandled() { return b_Handled; };
+
 public:
     bool b_Handled = false;
     int windowWidth = 0;
@@ -41,6 +42,7 @@ public:
     SCENE_NUMBER SceneNumber = SCENE_NUMBER::S_ONE;
     bool b_CameraUpdate = false;
     int division = 0;
+
 };
     
 template<typename T>

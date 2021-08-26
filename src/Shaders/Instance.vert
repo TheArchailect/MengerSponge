@@ -1,10 +1,8 @@
 #version 460 core
 layout (location = 0) in vec3 Position0;
-
-uniform mat4 M[9];
-out mat4 Models;
-
+layout (location = 1) in mat4 M;
+out mat4 Model;
 void main(void) {
-	Models = M[gl_InstanceID];
-	gl_Position = vec4(Position0, 1.0);
+	Model = M;
+	gl_Position = vec4(Position0 , 1.0);
 }

@@ -8,7 +8,7 @@ Scene::Scene(int width, int height)
 	CurrentSubdivision = 0;
 	MengerSize = 20;
 	Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
-	m_VAO = new Mesh(m_Sponge, m_Indices);
+	m_VertCount = m_Sponge.size();
 	m_LightCount = 0;
 	std::vector<Vertex> GridVerts;
 	std::vector<uint32_t> GridIndices;
@@ -28,7 +28,7 @@ Scene::Scene(int width, int height)
 		GridIndices.push_back(i - 1);
 		GridIndices.push_back(i - 2);
 	}
-	m_Grid = new Mesh(GridVerts, GridIndices);
+	//m_Grid = new Mesh(GridVerts, GridIndices);
 
 	// brass
 	GLfloat brass_ambient[] = { 0.329412f, 0.223529f, 0.027451f,1.0f };
@@ -42,11 +42,11 @@ Scene::Scene(int width, int height)
 	GLfloat wrubber_specular[] = { 0.7f,0.7f,0.7f,1.0f };
 	GLfloat wrubber_shine = 10.0f;
 
-	// black rubber
-	GLfloat brubber_ambient[] = { 0.02f, 0.02f, 0.02f, 1.0f };
-	GLfloat brubber_diffuse[] = { 0.01f, 0.01f, 0.01f, 1.0f };
-	GLfloat brubber_specular[] = { 0.4f, 0.4f, 0.4f, 1.0f };
-	GLfloat brubber_shine = 10.0f;
+	// pearl
+	GLfloat brubber_ambient[] = { 0.15f, 0.15f, 0.15f, 1.0f };
+	GLfloat brubber_diffuse[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+	GLfloat brubber_specular[] = { 0.774597f, 0.774597f, 0.774597f, 1.0f };
+	GLfloat brubber_shine = 256.8f;
 
 	// mats
 	m_Mats.push_back(new Material(brass_ambient, brass_diffuse, brass_specular, brass_shine));
@@ -56,15 +56,11 @@ Scene::Scene(int width, int height)
 	// lights
 	m_DirectionLight = new DirectionalLight
 	(
-		glm::vec3(-0.2, -1.0, -0.3), 
-		glm::vec3(0.04f, 0.00f, 0.04f), 
-		glm::vec3(0.7f, 0.0f, 0.7f), 
-		glm::vec3(1.0f, 1.0f, 1.0f)
+		glm::vec3(0, 0, 0), 
+		glm::vec3(0.05f, 0.05f, 0.05f),
+		glm::vec3(0.4f, 0.4f, 0.4f),
+		glm::vec3(0.9f, 0.9f, 0.9f)
 	);
-	//m_Lights.push_back(new PointLight(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1), glm::vec3(1, 1, 1)));
-	//m_Lights.push_back(new PointLight(glm::vec3(-28, 10, -5), glm::vec3(1, 0, 0), glm::vec3(1, 0.0, 0.3), glm::vec3(1, 1, 1)));
-	//m_Lights.push_back(new PointLight(glm::vec3(50, -10, 5), glm::vec3(0, 0, 1), glm::vec3(0, 0, 1), glm::vec3(1, 1, 1)));
-	//m_Lights.push_back(new PointLight(glm::vec3(-49, 10, 5), glm::vec3(.01, 0, .2), glm::vec3(1, 0, .2), glm::vec3(1, 1, 1)));
 }
 
 void Scene::Subdivide(glm::vec3 Position, float s, int subd)
@@ -95,6 +91,7 @@ void Scene::Subdivide(glm::vec3 Position, float s, int subd)
 			}
 		}
 	}
+	m_VertCount = m_Sponge.size();
 }
 
 void Scene::Compile(glm::vec3 origin, float size)
@@ -195,47 +192,62 @@ void Scene::RegisterCallbacks()
 			std::placeholders::_1
 		)
 	);
+	EventManager::Get().ApplicationDispatcher.Subscribe
+	(
+		ApplicationEvent::REMOVE_LIGHT,
+		std::bind
+		(
+			&Scene::DecrementLight,
+			this,
+			std::placeholders::_1
+		)
+	);
 }
 
 void Scene::GenerateLight(const Event<ApplicationEvent>& e)
 {
-	float rx = RandomFloat(-15, 15);
-	float ry = RandomFloat(-15, 15);
-	float rz = RandomFloat(-15, 15);
+	if (super::b_IsActive)
+	{
+		SDL_LogInfo(SDL_LOG_CATEGORY_CUSTOM, "%s", e.GetName().c_str());
+		if (m_LightCount < MAX_LIGHTS)
+		{
+			float R = 20;
+			float dr = RandomFloat(0, 1);
+			float dg = RandomFloat(0, 1);
+			float db = RandomFloat(0, 1);
+			float ds = RandomFloat(0, 256);
+			float div = 3.0;
+			m_Lights.push_back
+			(
+				new PointLight
+				(
+					SphericalDistribution() * R,
+					glm::vec3(dr / div, dg / div, db / div),
+					glm::vec3(dr, dg, db),
+					glm::vec3(dr, dg, db)
+				)
+			);
+			m_LightCount++;
+		}
+	}
 
-	float dr = RandomFloat(0, 1);
-	float dg = RandomFloat(0, 1);
-	float db = RandomFloat(0, 1);
-	float ds = RandomFloat(0, 256);
-	float div = 3.0;
-	m_Lights.push_back
-	(
-		new PointLight
-		(
-			glm::vec3(rx, ry, rz), 
-			glm::vec3(dr / div, dg / div, db / div), 
-			glm::vec3(dr, dg, db), 
-			glm::vec3(dr, dg, db)
-		)
-	);
-	m_LightCount++;
 }
 
-float Scene::RandomFloat(float min, float max)
+void Scene::DecrementLight(const Event<ApplicationEvent>& e)
 {
-	float random = ((float)rand()) / (float)RAND_MAX;
-	float x = max - min;
-	float result = random * x;
-	return min + result;
+	if (super::b_IsActive)
+	{
+		SDL_LogInfo(SDL_LOG_CATEGORY_CUSTOM, "%s", e.GetName().c_str());
+		if (m_LightCount > 0)
+		{
+			m_Lights.erase(m_Lights.begin() + m_Lights.size() - 1);
+			m_LightCount--;
+		}
+	}
 }
 
 unsigned long Scene::GeometrySize()
 {
 	unsigned long value = (sizeof(Vertex) * m_Sponge.size());
     return value;
-}
-
-int Scene::TriangleCount()
-{
-	return m_VAO->GetElementCount() / 3;
 }

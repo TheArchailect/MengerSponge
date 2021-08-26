@@ -1,5 +1,5 @@
 #pragma once
-#include "../EventManager.h"
+#include "Event/EventManager.h"
 
 class Generate : public Event<ApplicationEvent> {
 public:

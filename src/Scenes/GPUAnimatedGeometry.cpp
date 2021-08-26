@@ -1,5 +1,4 @@
 #include "GPUAnimatedGeometry.h"
-#include "../Application.h"
 
 GPUAnimatedGeometry::GPUAnimatedGeometry(int width, int height) : Scene(width, height)
 {
@@ -54,44 +53,15 @@ void GPUAnimatedGeometry::GeometryGenerate(const Event<ApplicationEvent>& e)
 		float radius = 10.0f;
 		for (int i = 0; i < m_Sponge.size(); ++i)
 		{
-			m_Sponge.at(i).Normal = SphereCast(glm::vec3(0, 0, 0) , m_Sponge.at(i).Position, radius);
+			m_Sponge.at(i).Normal = CubicSphereCast(glm::vec3(0, 0, 0) , m_Sponge.at(i).Position, radius);
 		}
 		m_VAO = new Mesh(m_Sponge, m_Indices);
 	}
 }
 
-glm::vec3 GPUAnimatedGeometry::SphereCast(glm::vec3 origin, glm::vec3 point, float radius)
+int GPUAnimatedGeometry::TriangleCount()
 {
-	float intersection = 0;
-	float size = 10.0f;
-	if (abs(point.x) >= abs(point.y) && abs(point.x) >= abs(point.z))
-	{
-		intersection = size / point.x;
-	}
-	if (abs(point.y) >= abs(point.x) && abs(point.y) >= abs(point.z))
-	{
-		intersection = size / point.y;
-	}
-	if (abs(point.z) >= abs(point.y) && abs(point.z) >= abs(point.x))
-	{
-		intersection = size / point.z;
-	}
-	
-	glm::vec3 P = point * intersection;
-	float mdist = glm::distance(origin, P);
-	float Percentage = glm::distance(origin, point) / mdist;
-	glm::vec3 R(radius, 0, 0);
-	float dif = glm::length(R * Percentage) / glm::length(point);
-	if (dif < 1.0f)
-	{
-		return P = point * dif;
-	}
-	return point;
-}
-
-float GPUAnimatedGeometry::Map(float value, float min1, float max1, float min2, float max2)
-{
-	return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
+	return m_VAO->GetElementCount() / 3;
 }
 
 void GPUAnimatedGeometry::RegisterCallbacks()
@@ -119,25 +89,31 @@ void GPUAnimatedGeometry::Update()
 	SetVec3(m_Shader->GetShaderProgramID(), "Camera", m_Camera->GetPostition());
 	// misc
 	SetFloat(m_Shader->GetShaderProgramID(), "SystemTime", SDL_GetTicks());
-	// lighting directional
-	m_DirectionLight->Lp = m_Camera->GetForward();
-	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Direction", m_DirectionLight->Lp);
-	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Ambient", m_DirectionLight->La);
-	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Diffuse", m_DirectionLight->Ld);
-	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Specular", m_DirectionLight->Ls);
-	// lighting point
-	SetInt(m_Shader->GetShaderProgramID(), "LightCount", m_LightCount);
-	for (int i = 0; i < m_LightCount; ++i)
+
+	if (Application::Get().b_Lighting)
 	{
-		std::string idx = std::to_string(i);
-		SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Position").c_str(), super::m_Lights.at(i)->Position);
-		SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Ambient").c_str(), super::m_Lights.at(i)->Ambient);
-		SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Diffuse").c_str(), super::m_Lights.at(i)->Diffuse);
-		SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Specular").c_str(), super::m_Lights.at(i)->Specular);
-		SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Constant").c_str(), super::m_Lights.at(i)->Constant);
-		SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Linear").c_str(), super::m_Lights.at(i)->Linear);
-		SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Quadratic").c_str(), super::m_Lights.at(i)->Quadratic);
+		// lighting directional
+		//m_DirectionLight->Lp = m_Camera->GetForward();
+		//SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Direction", m_DirectionLight->Lp);
+		SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Ambient", m_DirectionLight->La);
+		SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Diffuse", m_DirectionLight->Ld);
+		SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Specular", m_DirectionLight->Ls);
+		// lighting point
+		SetInt(m_Shader->GetShaderProgramID(), "LightCount", m_LightCount);
+		for (int i = 0; i < m_LightCount; ++i)
+		{
+			std::string idx = std::to_string(i);
+			SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Position").c_str(), super::m_Lights.at(i)->Position);
+			SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Ambient").c_str(), super::m_Lights.at(i)->Ambient);
+			SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Diffuse").c_str(), super::m_Lights.at(i)->Diffuse);
+			SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Specular").c_str(), super::m_Lights.at(i)->Specular);
+			SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Constant").c_str(), super::m_Lights.at(i)->Constant);
+			SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Linear").c_str(), super::m_Lights.at(i)->Linear);
+			SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Quadratic").c_str(), super::m_Lights.at(i)->Quadratic);
+		}
 	}
+	else SetInt(m_Shader->GetShaderProgramID(), "LightCount", -1);
+
 	// materials
 	for (int i = 0; i < MATERIALS; ++i)
 	{

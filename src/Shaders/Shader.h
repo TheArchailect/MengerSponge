@@ -1,7 +1,7 @@
 #pragma once
-#include "../Core/include.h"
-#include "../Core/Camera.h"
-#include "../Core/Scenes/Scene.h"
+#include "Core/include.h"
+#include "Core/Components/Camera.h"
+#include "Scenes/Scene.h"
 // Vertex & Fragment
 static int CreateShader(unsigned int vs, unsigned int fs) {
 	unsigned int program = glCreateProgram();

@@ -1,9 +1,10 @@
 #pragma once
-#include "include.h"
+#include "Core/include.h"
 #include <stb/stb_image.h>
-#include "Window.h"
-#include "Input.h"
-#include "EngineUtilities.h"
+#include "Core/Window.h"
+#include "Core/Input.h"
+#include "Utils/EngineUtilities.h"
+#include "Core/Components/Material.h"
 
 class Application
 {
@@ -11,12 +12,15 @@ public:
 	Application(uint32_t width, uint32_t height);
 	virtual void Run() = 0;
 	virtual void Init();
+	// temp
+	bool b_Lighting;
 
 private:
 	virtual void Tick() = 0;
 	void RegisterCallbacks();
 	void ToggleLighting(const Event<ApplicationEvent>& e);
 	void ToggleBackfaceCulling(const Event<ApplicationEvent>& e);
+	void ToggleDepthBuffer(const Event<ApplicationEvent>& e);
 
 protected:
 	void Clear();
@@ -36,7 +40,7 @@ protected:
 	bool b_IsRunning;
 	bool b_BackFaceCulling;
 	bool b_DepthTesting;
-	bool b_Lighting;
+	
 
 private:
 	static EngineUtils* m_Utils;

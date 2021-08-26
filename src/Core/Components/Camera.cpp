@@ -1,6 +1,6 @@
 #include "Camera.h"
 #include <iostream>
-#include "Application.h"
+#include "Application/Application.h"
 
 Camera::Camera(int width, int height)
 {
@@ -8,12 +8,12 @@ Camera::Camera(int width, int height)
 	m_Yaw = -90;
 	m_CameraSpeed = 8.0f;
 	m_Aspect = (float)width / (float)height;
-	FOV = 65.0f;
+	FOV = 85.0f;
 	m_Forward = glm::vec3(0.0f, 0.0f, -1.0f); // gets recalculated immidiately 
 	m_Position = glm::vec3(0.0f, 15.0f, 35.0f);
 	m_Up = glm::vec3(0.0f, 1.0f, 0.0f);
 	m_View = glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
-	m_Projection = glm::perspective(glm::radians(FOV), m_Aspect, 0.1f, 1000.0f);
+	m_Projection = glm::perspective(glm::radians(FOV), m_Aspect, 0.01f, 1000.0f);
 	RegisterCallbacks();
 }
 

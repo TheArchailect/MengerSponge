@@ -1,9 +1,9 @@
 #pragma once
-#include "../EventManager.h"
+#include "Event/EventManager.h"
 class ToggleProperties : public Event<ApplicationEvent> {
 public:
     ToggleProperties()
-        : Event<ApplicationEvent>(ApplicationEvent::TOGGLE_PROPERTIES, "end application") {}
+        : Event<ApplicationEvent>(ApplicationEvent::TOGGLE_PROPERTIES, "toggle properties panel event") {}
     virtual ~ToggleProperties() = default;
 public:
 };

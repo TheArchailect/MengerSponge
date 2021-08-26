@@ -1,6 +1,6 @@
 #pragma once
-#include <sdl/SDL.h>
-#include "../Event/EventManager.h"
+#include "Core/include.h"
+#include "Event/EventManager.h"
 
 	class Input
 	{

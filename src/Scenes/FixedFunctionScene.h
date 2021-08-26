@@ -1,5 +1,7 @@
 #pragma once
 #include "Scene.h"
+#include "Core/Components/Mesh.h"
+
 class FixedFunctionScene : public Scene
 {
 public:
@@ -7,15 +9,18 @@ public:
 	void Begin() override;
 	void End() override;
 	void Render() override;
+	int TriangleCount() override;
 
 private:
 	void RegisterCallbacks() override;
 	void Update() override;
-	void SetMaterial(const Material& m);
 	void Lighting();
 	
 protected:
 	void GeometryGenerate(const Event<ApplicationEvent>& e) override;
+
+private:
+	Mesh* m_VAO;
 
 };
 

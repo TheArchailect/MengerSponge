@@ -1,6 +1,6 @@
 #pragma once
 #include "include.h"
-#include "../Event/EventManager.h"
+#include "Event/EventManager.h"
 struct WindowData // TO DO
 {
 	std::string Title;
@@ -31,5 +31,6 @@ private:
 	SDL_GLContext m_Context;
 	SDL_Renderer* m_Renderer;
 	bool vsync;
+
 };
 

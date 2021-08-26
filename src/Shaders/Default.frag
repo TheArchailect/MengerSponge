@@ -46,8 +46,8 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 vd)
     // diffuse shading
     float diff = max(dot(normal, ld), 0.0);
     // specular shading
-    vec3 rd = reflect(-ld, normal);
-    float spec = pow(max(dot(vd, rd), 0.0), u_Material[MaterialIndex].Shininess);
+    vec3 hwd = normalize(ld + vd);
+    float spec = pow(max(dot(normal, hwd), 0.0), u_Material[MaterialIndex].Shininess);
     // attenuation
     float dist = length(light.Position - Position);
     float attenuation = 1.0 / (light.Constant + light.Linear * dist + light.Quadratic * (dist * dist));    
@@ -64,13 +64,13 @@ vec3 CalculatePointLight(PointLight light, vec3 normal, vec3 vd)
 vec3 CalculateDirectionLight(DirectionalLight light, vec3 normal, vec3 vd)
 {
 	// light direction
-	vec3 ld = normalize(-light.Direction);
+	vec3 ld = normalize(Camera - Position); // should the camera light source be always just emiting light from our camera position, or face our forward direction?
 	// diffuse shading
 	float diff = max(dot(normal, ld), 0.0);
-	// specular projection
-	vec3 rd = reflect(-ld, normal); // reflection direction
-	float spec = pow(max(dot(vd, rd), 0.0), u_Material[MaterialIndex].Shininess);
-	// combinations
+    // specular shading
+    vec3 hwd = normalize(ld + vd);
+    float spec = pow(max(dot(normal, hwd), 0.0), u_Material[MaterialIndex].Shininess);
+    // combinations
 	vec3 a = light.Ambient;
 	vec3 d = light.Diffuse * diff * u_Material[MaterialIndex].Diffuse;
 	vec3 s = light.Specular * spec * u_Material[MaterialIndex].Diffuse;
@@ -81,10 +81,19 @@ void main()
 {
 	vec3 n = normalize(Normal);
 	vec3 vd = normalize(Camera - Position);
-	vec3 result = CalculateDirectionLight(u_Light, n, vd);
-    for (int i = 0; i < LightCount; ++i)
+    vec3 result = vec3(0, 0, 0);
+    if (LightCount != -1)
     {
-        result += CalculatePointLight(u_PointLights[i], n, vd);
+        result = CalculateDirectionLight(u_Light, n, vd);
+        for (int i = 0; i < LightCount; ++i)
+        {
+            result += CalculatePointLight(u_PointLights[i], n, vd);
+        }
     }
+    else
+    {
+        result = u_Material[MaterialIndex].Diffuse + u_Material[MaterialIndex].Ambient;
+    }
+
 	FragColor = vec4(result, 1.0);
 } 

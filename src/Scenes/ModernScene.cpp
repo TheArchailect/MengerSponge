@@ -1,5 +1,4 @@
 #include "ModernScene.h"
-#include "../Application.h"
 
 ModernScene::ModernScene(int width, int height) : Scene(width, height)
 {
@@ -53,6 +52,11 @@ void ModernScene::GeometryGenerate(const Event<ApplicationEvent>& e)
 	}
 }
 
+int ModernScene::TriangleCount()
+{
+	return m_VAO->GetElementCount() / 3;
+}
+
 void ModernScene::RegisterCallbacks()
 {
 	EventManager::Get().ApplicationDispatcher.Subscribe
@@ -75,25 +79,29 @@ void ModernScene::Update()
 	SetMat4(m_Shader->GetShaderProgramID(), "Projection", m_Camera->GetProjection());
 	// camera
 	SetVec3(m_Shader->GetShaderProgramID(), "Camera", m_Camera->GetPostition());
-	// lighting directional
-	m_DirectionLight->Lp = m_Camera->GetForward();
-	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Direction", m_DirectionLight->Lp);
-	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Ambient", m_DirectionLight->La);
-	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Diffuse", m_DirectionLight->Ld);
-	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Specular", m_DirectionLight->Ls);
-	// lighting point
-	SetInt(m_Shader->GetShaderProgramID(), "LightCount", m_LightCount);
-	for (int i = 0; i < m_LightCount; ++i)
+	if (Application::Get().b_Lighting)
 	{
-		std::string idx = std::to_string(i);
-		SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Position").c_str(), super::m_Lights.at(i)->Position);
-		SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Ambient").c_str(), super::m_Lights.at(i)->Ambient);
-		SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Diffuse").c_str(), super::m_Lights.at(i)->Diffuse);
-		SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Specular").c_str(), super::m_Lights.at(i)->Specular);
-		SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Constant").c_str(), super::m_Lights.at(i)->Constant);
-		SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Linear").c_str(), super::m_Lights.at(i)->Linear);
-		SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Quadratic").c_str(), super::m_Lights.at(i)->Quadratic);
+		// lighting directional
+		//m_DirectionLight->Lp = m_Camera->GetForward();
+		//SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Direction", m_DirectionLight->Lp);
+		SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Ambient", m_DirectionLight->La);
+		SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Diffuse", m_DirectionLight->Ld);
+		SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Specular", m_DirectionLight->Ls);
+		// lighting point
+		SetInt(m_Shader->GetShaderProgramID(), "LightCount", m_LightCount);
+		for (int i = 0; i < m_LightCount; ++i)
+		{
+			std::string idx = std::to_string(i);
+			SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Position").c_str(), super::m_Lights.at(i)->Position);
+			SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Ambient").c_str(), super::m_Lights.at(i)->Ambient);
+			SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Diffuse").c_str(), super::m_Lights.at(i)->Diffuse);
+			SetVec3(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Specular").c_str(), super::m_Lights.at(i)->Specular);
+			SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Constant").c_str(), super::m_Lights.at(i)->Constant);
+			SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Linear").c_str(), super::m_Lights.at(i)->Linear);
+			SetFloat(m_Shader->GetShaderProgramID(), ("u_PointLights[" + idx + "].Quadratic").c_str(), super::m_Lights.at(i)->Quadratic);
+		}
 	}
+	else SetInt(m_Shader->GetShaderProgramID(), "LightCount", -1);
 	// materials
 	for (int i = 0; i < MATERIALS; ++i)
 	{
