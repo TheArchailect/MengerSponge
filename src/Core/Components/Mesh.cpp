@@ -170,6 +170,15 @@ void Mesh::Update()
     m_Transform = glm::rotate(m_Transform, m_Rotation.z, glm::vec3(0, 0, 1));
 }
 
+void Mesh::Bind(std::vector<Vertex> v)
+{
+    m_Verts = v;
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, m_Verts.size() * sizeof(Vertex), m_Verts.data(), GL_STATIC_DRAW);
+
+}
+
 void Mesh::SetMaterial(const Material& m)
 {
     glMaterialfv(GL_FRONT, GL_AMBIENT, m.Ka);

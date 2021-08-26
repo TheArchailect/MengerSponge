@@ -106,11 +106,12 @@ void InstancedGeometry::Update()
 	// matricies
 	SetMat4(m_Shader->GetShaderProgramID(), "View", m_Camera->GetView());
 	SetMat4(m_Shader->GetShaderProgramID(), "Projection", m_Camera->GetProjection());
+	SetMat4(m_Shader->GetShaderProgramID(), "InverseModel", glm::transpose(glm::inverse(m_VAO->GetTransform())));
 	// camera
 	SetVec3(m_Shader->GetShaderProgramID(), "Camera", m_Camera->GetPostition());
 	// lighting directional
-	//m_DirectionLight->Lp = m_Camera->GetForward();
-	//SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Direction", m_DirectionLight->Lp);
+	m_DirectionLight->Lp = m_Camera->GetForward();
+	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Direction", m_DirectionLight->Lp);
 	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Ambient", m_DirectionLight->La);
 	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Diffuse", m_DirectionLight->Ld);
 	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Specular", m_DirectionLight->Ls);

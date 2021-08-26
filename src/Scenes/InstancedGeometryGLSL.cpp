@@ -17,7 +17,6 @@ void InstancedGeometryGLSL::Begin()
 {
 	super::b_IsActive = true;
 	super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
-	//m_VAO = new Mesh(m_Sponge, m_Indices);
 	m_IVAO = new InstancedMesh(m_Sponge, m_Indices);
 	m_Camera->Reset(glm::vec3(0, 40, 80), -90, -25);
 }
@@ -29,7 +28,6 @@ void InstancedGeometryGLSL::End()
 	m_Sponge.clear();
 	m_Indices.clear();
 	glUseProgram(0);
-	//delete m_VAO;
 	delete m_IVAO;
 }
 
@@ -50,7 +48,6 @@ void InstancedGeometryGLSL::GeometryGenerate(const Event<ApplicationEvent>& e)
 		m_Sponge.clear();
 		m_Indices.clear();
 		super::Subdivide(glm::vec3(0, 0, 0), MengerSize, CurrentSubdivision);
-		//m_VAO = new Mesh(m_Sponge, m_Indices);
 		m_IVAO = new InstancedMesh(m_Sponge, m_Indices);
 	}
 }
@@ -84,8 +81,8 @@ void InstancedGeometryGLSL::Update()
 	// camera
 	SetVec3(m_Shader->GetShaderProgramID(), "Camera", m_Camera->GetPostition());
 	// lighting directional
-	//m_DirectionLight->Lp = m_Camera->GetForward();
-	//SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Direction", m_DirectionLight->Lp);
+	m_DirectionLight->Lp = m_Camera->GetForward();
+	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Direction", m_DirectionLight->Lp);
 	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Ambient", m_DirectionLight->La);
 	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Diffuse", m_DirectionLight->Ld);
 	SetVec3(m_Shader->GetShaderProgramID(), "u_Light.Specular", m_DirectionLight->Ls);

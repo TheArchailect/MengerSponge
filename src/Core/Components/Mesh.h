@@ -16,6 +16,7 @@ public:
 	void DrawLegacy(std::vector<Material*> mats);								// legacy
 	void DrawInstanced(int n);
 	void Update();
+	void Bind(std::vector<Vertex> v);
 	glm::mat4 GetTransform() const;
 	int GetElementCount();
 

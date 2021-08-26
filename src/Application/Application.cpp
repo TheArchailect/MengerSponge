@@ -34,6 +34,7 @@ void Application::Init()
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
     }
+    glEnable(GL_SMOOTH);
     glFrontFace(GL_CCW);
     glEnable(GL_BLEND);
     glBlendEquation(GL_FUNC_ADD);
