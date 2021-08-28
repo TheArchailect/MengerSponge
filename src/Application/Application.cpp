@@ -4,10 +4,10 @@
 EngineUtils* Application::m_Utils = nullptr;
 Application* Application::s_Instance = nullptr;
 
-Application::Application(uint32_t width, uint32_t height)
+Application::Application(int width, int height)
 {
     s_Instance = this;
-    m_FullScreen = false; // TO DO
+    m_FullScreen = true;
     b_IsRunning = true;
     m_EventManager = new EventManager();
     m_Window = std::unique_ptr<Window>

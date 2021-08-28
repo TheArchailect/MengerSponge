@@ -4,21 +4,17 @@ layout (location = 1) in vec3 Position1;
 
 uniform float SystemTime;
 
-float map(float value, float min1, float max1, float min2, float max2) {
+float Map(float value, float min1, float max1, float min2, float max2) {
   return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
 }
 
-#ifndef PI
-#define PI 3.141592653589793
-#endif
-
-float sineInOut(float t) {
-  return -0.5 * (cos(PI * t) - 1.0);
+float ease(float t) {
+	return t * t * t;
 }
 
 void main(void) {
-	float AnimationTime = map(cos(SystemTime/1000), -1, 1, 0, 1);
-    AnimationTime = sineInOut(AnimationTime);
+	float AnimationTime = Map(cos(SystemTime/1000), -1, 1, 0, 1);
+    AnimationTime = ease(AnimationTime);
 	vec3 interpolatedPosition = AnimationTime * Position0 + (1 - AnimationTime) * Position1;
 	gl_Position = vec4(interpolatedPosition, 1.0);
 }

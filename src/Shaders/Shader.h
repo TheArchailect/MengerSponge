@@ -92,7 +92,7 @@ public:
 			glGetShaderiv(ID, GL_INFO_LOG_LENGTH, &length);
 			char* message = (char*)alloca(length * sizeof(char));
 			glGetShaderInfoLog(ID, length, &length, message);
-			SDL_LogCritical(SDL_LOG_CATEGORY_CUSTOM, "%s", message);
+			SDL_LogCritical(SDL_LOG_CATEGORY_CUSTOM, "Compilation Error: %s", message);
 			glDeleteShader(ID);
 		}
 	}

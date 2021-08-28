@@ -1,4 +1,4 @@
-﻿#version 460
+#version 460
 out vec4 FragColor;
 
 in vec3 Normal;
@@ -39,20 +39,21 @@ uniform PointLight u_PointLights[MAX_POINT_LIGHTS];
 uniform DirectionalLight u_Light;
 uniform Material u_Material[MATERIALS];
 
-// C = La Ma + l∑fatt[Ld Md (N.L) + Ls Ms (N.H)^n]
 void main()
 {
     // variables
     // N
     vec3 N = normalize(Normal);
+    //vec3 N = normalize(cross(dFdx(Position), dFdy(Position)));            
     // V
     vec3 V = normalize(Camera - Position);
     // L
-    vec3 L = normalize(u_Light.Direction - Position);
+    vec3 L = normalize(-u_Light.Direction);
     // H = L + V / |L + V| 
     vec3 H = normalize(L + V);
     // (N.H)^n
-    float SpecularAngle =  pow(max(dot(H, N), 0.0), u_Material[MaterialIndex].Shininess);
+    float SpecularAngle =  max(dot(H, N), 0.0);
+    float spec = pow(SpecularAngle, u_Material[MaterialIndex].Shininess);
 
     // outputs
     vec3 Ambient;
@@ -76,7 +77,7 @@ void main()
 
         for (int i = 0; i < LightCount; ++i)
         {
-            // variables
+            // variables point light
             // L
             L = normalize(u_PointLights[i].Position - Position);
             // H = L + V / |L + V| 
@@ -92,7 +93,7 @@ void main()
                 u_PointLights[i].Quadratic * (Distance * Distance)), 
                 1.0
             );
-            // combinations
+            // combinations pointlight
             // La * Ma
             Ambient = (u_PointLights[i].Ambient * u_Material[MaterialIndex].Ambient) * Attenuation;
             // Ls * Ms * (N.H)^n
@@ -110,4 +111,4 @@ void main()
     }
     
     FragColor = vec4(Color, 1.0);
-} 
+}

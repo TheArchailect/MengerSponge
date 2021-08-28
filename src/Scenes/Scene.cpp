@@ -28,25 +28,24 @@ Scene::Scene(int width, int height)
 		GridIndices.push_back(i - 1);
 		GridIndices.push_back(i - 2);
 	}
-	//m_Grid = new Mesh(GridVerts, GridIndices);
 
-	// brass
+	// 
 	GLfloat brass_ambient[] = { 0.329412f, 0.223529f, 0.027451f,1.0f };
 	GLfloat brass_diffuse[] = { 0.780392f, 0.568627f, 0.113725f, 1.0f };
 	GLfloat brass_specular[] = { 0.992157f, 0.941176f, 0.807843f, 1.0f };
-	GLfloat brass_shine = 27.8974f;
+	GLfloat brass_shine = 32.0f;
 
-	// white rubber
+	// 
 	GLfloat wrubber_ambient[] = { 0.05f,0.05f,0.05f,1.0f };
 	GLfloat wrubber_diffuse[] = { 0.5f,0.5f,0.5f,1.0f };
 	GLfloat wrubber_specular[] = { 0.7f,0.7f,0.7f,1.0f };
-	GLfloat wrubber_shine = 10.0f;
+	GLfloat wrubber_shine = 32.0f;
 
-	// pearl
+	// 
 	GLfloat brubber_ambient[] = { 0.15f, 0.15f, 0.15f, 1.0f };
 	GLfloat brubber_diffuse[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 	GLfloat brubber_specular[] = { 0.774597f, 0.774597f, 0.774597f, 1.0f };
-	GLfloat brubber_shine = 256.8f;
+	GLfloat brubber_shine = 128.0f;
 
 	// mats
 	m_Mats.push_back(new Material(brass_ambient, brass_diffuse, brass_specular, brass_shine));
@@ -57,9 +56,9 @@ Scene::Scene(int width, int height)
 	m_DirectionLight = new DirectionalLight
 	(
 		glm::vec3(0, 0, 0), 
-		glm::vec3(0.05f, 0.05f, 0.05f),
-		glm::vec3(0.4f, 0.4f, 0.4f),
-		glm::vec3(0.9f, 0.9f, 0.9f)
+		glm::vec3(0.366f, 0.366f, 0.366f),
+		glm::vec3(0.56f, 0.56f, 0.56f),
+		glm::vec3(0.2f, 0.2f, 0.2f)
 	);
 }
 
@@ -211,7 +210,7 @@ void Scene::GenerateLight(const Event<ApplicationEvent>& e)
 		SDL_LogInfo(SDL_LOG_CATEGORY_CUSTOM, "%s", e.GetName().c_str());
 		if (m_LightCount < MAX_LIGHTS)
 		{
-			float R = 20;
+			float R = 85;
 			float dr = RandomFloat(0, 1);
 			float dg = RandomFloat(0, 1);
 			float db = RandomFloat(0, 1);

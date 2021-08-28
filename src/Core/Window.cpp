@@ -8,12 +8,16 @@ std::unique_ptr<Window> Window::Create(const WindowData& properties, bool FullSc
 Window::Window(const WindowData& properties, bool FullScreen)
 {
 	SDL_LogSetPriority(SDL_LOG_CATEGORY_CUSTOM, SDL_LOG_PRIORITY_VERBOSE);
-	vsync = true;
-	Init(properties);
+	vsync = true; 
+	Init(properties, FullScreen);
 	RegisterCallbacks();
 	if (FullScreen)
 	{
-		SDL_SetWindowFullscreen(m_Window, SDL_WINDOW_FULLSCREEN);		
+		if (m_Renderer != nullptr)
+		{
+			SDL_SetWindowFullscreen(m_Window, SDL_WINDOW_FULLSCREEN);
+		}
+		else SDL_LogError(SDL_LOG_CATEGORY_CUSTOM, "SDL Renderer not initialized");
 	}
 }
 
@@ -40,6 +44,8 @@ void Window::Update()
 
 void Window::WindowResize(const Event<WindowEvent>& e)
 {
+	SDL_LogInfo(SDL_LOG_CATEGORY_CUSTOM, (e.GetName().c_str()));
+	std::cout << e.windowWidth << ", " << e.windowHeight << std::endl;
 	m_Data.Height = e.windowHeight;
 	m_Data.Width = e.windowWidth;
 	glViewport(0, 0, m_Data.Width, m_Data.Height);
@@ -47,7 +53,7 @@ void Window::WindowResize(const Event<WindowEvent>& e)
 	EventManager::Get().CameraDispatcher.Post(c);
 }
 
-void Window::Init(const WindowData& properties)
+void Window::Init(const WindowData& properties, bool FullScreen)
 {
 	bool b_SDLInitialised = false;
 	m_Data.Title = properties.Title;
@@ -91,7 +97,6 @@ void Window::Init(const WindowData& properties)
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-
 	m_Context = SDL_GL_CreateContext(m_Window);
 	SDL_GL_MakeCurrent(m_Window, m_Context);
 	SDL_GL_SetSwapInterval(vsync);

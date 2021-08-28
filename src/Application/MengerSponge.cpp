@@ -4,7 +4,7 @@ MengerSponge::MengerSponge(uint32_t width, uint32_t height)
     : Application(width, height)
 {
     RegisterCallbacks();
-    SceneNumber = SCENE_NUMBER::S_ONE;
+    SceneNumber = SCENE_NUMBER::S_SIX;
     OverlayState = OVERLAY_STATE::S_FULL_HUD;
     m_Overlay = new Overlay();
 }

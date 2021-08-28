@@ -16,11 +16,6 @@ static float RandomFloat(float min, float max)
 
 //	Easings By Robert Penner
 //	https://github.com/glslify/glsl-easings
-static float SineInOut(float t)
-{
-	return -0.5 * (cos(M_PI * t) - 1.0);
-}
-
 static float exponentialInOut(float t) {
     return t == 0.0 || t == 1.0
         ? t

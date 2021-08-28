@@ -1,11 +1,11 @@
 #pragma once
 #include "include.h"
 #include "Event/EventManager.h"
-struct WindowData // TO DO
+struct WindowData
 {
 	std::string Title;
-	unsigned int Width;
-	unsigned int Height;
+	int Width;
+	int Height;
 	bool VSync;
 };
 
@@ -24,7 +24,7 @@ public:
 	WindowData m_Data;
 
 private:
-	void Init(const WindowData& properties);
+	void Init(const WindowData& properties, bool FullScreen);
 
 private:
 	SDL_Window* m_Window;

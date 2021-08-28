@@ -65,7 +65,6 @@ void InstancedGeometry::Render()
 			idx++;
 		}
 	}
-
 	Application::Get().GetWindow().Update();
 }
 

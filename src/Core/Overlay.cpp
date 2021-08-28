@@ -15,7 +15,7 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
     float ZOffset = 30;
     if (!OverlayState == OVERLAY_STATE::S_FPS_ONLY)
     {
-        gltColor(0.8, 0.8, 0.8, 0.9);
+        gltColor(0.8, 0.8, 0.8, 0.7);
         {
             sprintf_s(str, "Triangles: %d", m_OverlayData->TriCount);
             gltSetText(field, str);
@@ -167,7 +167,7 @@ void Overlay::Render(OVERLAY_STATE OverlayState)
         }
     }
     // FPS ONLY
-    gltColor(0.8, 0.8, 0.8, 0.9);
+    gltColor(0.8, 0.8, 0.8, 0.7);
     { 
         sprintf_s(str, "FPS: %.2f", Application::Get().GetUtils().m_FPS);
         gltSetText(field, str);

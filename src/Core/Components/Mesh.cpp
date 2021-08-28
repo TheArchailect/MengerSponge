@@ -175,7 +175,7 @@ void Mesh::Bind(std::vector<Vertex> v)
     m_Verts = v;
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, m_Verts.size() * sizeof(Vertex), m_Verts.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, m_Verts.size() * sizeof(Vertex), m_Verts.data(), GL_DYNAMIC_DRAW);
 
 }
 

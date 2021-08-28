@@ -9,10 +9,9 @@
 class Application
 {
 public:
-	Application(uint32_t width, uint32_t height);
+	Application(int width, int height);
 	virtual void Run() = 0;
 	virtual void Init();
-	// temp
 	bool b_Lighting;
 
 private:
