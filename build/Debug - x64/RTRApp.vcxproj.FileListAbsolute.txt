@@ -1,3 +1,0 @@
-C:\Users\haymi\Desktop\MengerSponge\build\Debug - x64\A1.exe
-C:\Users\haymi\Desktop\MengerSponge\build\Debug - x64\A1.pdb
-C:\Dev\MengerSponge\build\Debug - x64\A1.exe
